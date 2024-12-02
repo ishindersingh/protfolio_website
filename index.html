@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coming Soon</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to bottom, #6a11cb, #2575fc);
+      color: white;
+      text-align: center;
+    }
+    h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+    p {
+      font-size: 1.5rem;
+      margin: 10px 0;
+    }
+    .countdown {
+      font-size: 2rem;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h1>Coming Soon</h1>
+    <p>We’re working hard to launch our website!</p>
+    <div class="countdown" id="countdown"></div>
+    <p>Stay tuned for something amazing.</p>
+  </div>
+
+  <script>
+    // Countdown Timer
+    const launchDate = new Date("2024-12-25T00:00:00").getTime();
+
+    const countdownElement = document.getElementById("countdown");
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const timeLeft = launchDate - now;
+
+      if (timeLeft > 0) {
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+        countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      } else {
+        countdownElement.innerHTML = "We're live!";
+      }
+    };
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
