@@ -1,0 +1,173 @@
+:root {
+    --purple-primary: #9b3df4;
+    --purple-secondary: #8a2be2;
+    --background-dark: #1e1e1e;
+    --background-light: #272727;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+}
+
+body {
+    background-color: var(--background-dark);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Brand Section */
+.brand {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.logo {
+    width: 80px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.headline {
+    font-size: 1.8rem;
+    font-weight: 600;
+    font-family: monospace;
+    color: var(--text-primary);
+}
+
+/* Chat Container */
+.chat-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--background-dark);
+    height: 100%;
+}
+
+.chat-box {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Message Styling */
+.message {
+    padding: 1rem;
+    border-radius: 1rem;
+    display: flex;
+    gap: 1rem;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.user-message {
+    background: var(--purple-primary);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+.ai-message {
+    background: var(--purple-secondary);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+.message-content {
+    flex: 1;
+}
+
+.message pre {
+    background: #000000 !important;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.message code {
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+}
+
+/* Input Section */
+.input-container {
+    position: relative;
+    padding: 1rem;
+    background: var(--background-light);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    border-top: 1px solid #333333;
+    width: 100%;
+}
+
+#user-input {
+    flex: 1;
+    padding: 0.9rem 1.2rem;
+    border-radius: 25px;
+    border: none;
+    background: #2a2a2a;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+#user-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--purple-primary);
+}
+
+.send-button {
+    background: var(--purple-primary);
+    border: none;
+    padding: 0.75rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.send-button:hover {
+    background: var(--purple-secondary);
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color 0.2s ease;
+}
+
+.icon-button:hover {
+    color: var(--purple-primary);
+}
+
+.uploaded-image {
+    max-width: 300px;
+    border-radius: 8px;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.uploaded-image:hover {
+    transform: scale(1.02);
+}
+
+/* Add prism.js theme modifications */
+.token.keyword { color: #ff79c6; }
+.token.string { color: #f1fa8c; }
+.token.function { color: #50fa7b; }
+.token.comment { color: #6272a4; }
