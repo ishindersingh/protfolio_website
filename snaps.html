@@ -4,69 +4,219 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Love Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
+        :root {
+            --bg-primary: #0f0c29;
+            --bg-secondary: #121534;
+            --accent-primary: #7668ED;
+            --accent-secondary: #A47EF7;
+            --text-primary: #ffffff;
+            --text-secondary: #b8b8e0;
+            --card-bg: rgba(30, 28, 54, 0.9);
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            --gradient: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        }
+        
         body {
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: #333;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(to bottom, var(--bg-primary), var(--bg-secondary));
+            background-attachment: fixed;
+            color: var(--text-primary);
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(118, 104, 237, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(164, 126, 247, 0.2) 0%, transparent 20%);
+            z-index: -1;
+        }
+        
+        /* Star animation */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            opacity: 0;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
         
         header {
             text-align: center;
             margin-bottom: 40px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            background: var(--card-bg);
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(118, 104, 237, 0.1) 0%, transparent 70%);
+            opacity: 0.8;
+            animation: rotate 15s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            font-weight: 700;
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
         }
         
-        p {
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 3px;
+        }
+        
+        header p {
             font-size: 1.1rem;
-            color: #666;
-            margin-bottom: 20px;
+            color: var(--text-secondary);
+            margin-top: 20px;
+            font-weight: 300;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .filter-btn {
+            padding: 12px 25px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            color: var(--text-secondary);
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+        
+        .filter-btn:hover::before,
+        .filter-btn.active::before {
+            opacity: 1;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(118, 104, 237, 0.3);
         }
         
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 25px;
             margin-bottom: 40px;
         }
         
         .media-item {
-            background: white;
-            border-radius: 10px;
+            background: var(--card-bg);
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             cursor: pointer;
             position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
         
         .media-item:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(73, 63, 181, 0.4);
+            border-color: rgba(118, 104, 237, 0.5);
         }
         
         .media-item img, .media-item video {
@@ -74,24 +224,84 @@
             height: 250px;
             object-fit: cover;
             display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .media-item:hover img, .media-item:hover video {
+            transform: scale(1.05);
         }
         
         .media-item .caption {
-            padding: 15px;
-            font-size: 0.9rem;
-            color: #666;
+            padding: 18px 15px;
+            font-size: 1rem;
+            color: var(--text-secondary);
             text-align: center;
+            font-weight: 500;
+            background: rgba(15, 12, 41, 0.8);
+            backdrop-filter: blur(5px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .media-item .date {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.5);
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.6);
             color: white;
-            padding: 5px 10px;
+            padding: 7px 14px;
             border-radius: 20px;
             font-size: 0.8rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .media-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(15, 12, 41, 0.8) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .media-item:hover::before {
+            opacity: 1;
+        }
+        
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            color: white;
+            font-size: 3rem;
+            z-index: 2;
+            opacity: 0;
+            transition: all 0.3s;
+            background: rgba(118, 104, 237, 0.8);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(118, 104, 237, 0.5);
+        }
+        
+        .media-item:hover .play-overlay {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
         
         .modal {
@@ -101,15 +311,17 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(10, 8, 29, 0.95);
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(10px);
         }
         
         .modal-content {
             max-width: 90%;
             max-height: 90%;
+            position: relative;
         }
         
         .modal-content img, .modal-content video {
@@ -117,7 +329,9 @@
             max-height: 90vh;
             display: block;
             margin: 0 auto;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .close-btn {
@@ -125,88 +339,99 @@
             top: 20px;
             right: 30px;
             color: white;
-            font-size: 40px;
+            font-size: 35px;
             cursor: pointer;
-        }
-        
-        .filter-buttons {
+            width: 50px;
+            height: 50px;
             display: flex;
+            align-items: center;
             justify-content: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 10px;
+            background: rgba(73, 63, 181, 0.3);
+            border-radius: 50%;
+            transition: all 0.3s;
         }
         
-        .filter-btn {
-            padding: 10px 20px;
-            background: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .filter-btn.active {
-            background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
-            color: white;
-        }
-        
-        .filter-btn:hover {
-            transform: translateY(-2px);
+        .close-btn:hover {
+            background: var(--accent-primary);
+            transform: rotate(90deg);
         }
         
         .loading {
             text-align: center;
-            padding: 40px 0;
+            padding: 60px 0;
             font-size: 1.2rem;
-            color: #666;
+            color: var(--text-secondary);
+            position: relative;
+        }
+        
+        .loading::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 40px;
+            margin: 20px auto 0;
+            border-radius: 50%;
+            border: 3px solid rgba(118, 104, 237, 0.3);
+            border-top-color: var(--accent-primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         .error {
-            background: #fee;
-            color: #c33;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .setup-instructions {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(220, 53, 69, 0.2);
+            color: #ff8b9a;
             padding: 20px;
             border-radius: 10px;
-            margin-top: 40px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .setup-instructions h2 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-        
-        .setup-instructions ol {
-            margin-left: 20px;
-        }
-        
-        .setup-instructions li {
-            margin-bottom: 10px;
-        }
-        
-        .setup-instructions code {
-            background: #f0f0f0;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-family: monospace;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            backdrop-filter: blur(5px);
         }
         
         footer {
             text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            color: #666;
-            font-size: 0.9rem;
+            margin-top: 60px;
+            padding: 30px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(118, 104, 237, 0.1), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 3s infinite;
+            z-index: 0;
+        }
+        
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+        
+        .heart-icon {
+            color: #ff6b95;
+            margin: 0 5px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
         
         /* Responsive styles */
@@ -216,7 +441,11 @@
             }
             
             h1 {
-                font-size: 2rem;
+                font-size: 2.3rem;
+            }
+            
+            .filter-btn {
+                padding: 10px 20px;
             }
         }
         
@@ -230,12 +459,27 @@
             }
             
             h1 {
-                font-size: 1.8rem;
+                font-size: 2rem;
+            }
+            
+            header, footer {
+                padding: 20px 15px;
+            }
+            
+            .filter-buttons {
+                gap: 10px;
+            }
+            
+            .filter-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
             }
         }
     </style>
 </head>
 <body>
+    <div class="stars"></div>
+    
     <div class="container">
         <header>
             <h1>Our Love Gallery</h1>
@@ -243,9 +487,9 @@
         </header>
         
         <div class="filter-buttons">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="images">Photos</button>
-            <button class="filter-btn" data-filter="videos">Videos</button>
+            <button class="filter-btn active" data-filter="all">All Memories</button>
+            <button class="filter-btn" data-filter="images"><i class="fas fa-camera"></i> Photos</button>
+            <button class="filter-btn" data-filter="videos"><i class="fas fa-video"></i> Videos</button>
         </div>
         
         <div id="error-message" class="error" style="display: none;"></div>
@@ -260,7 +504,7 @@
         </div>
         
         <footer>
-            <p>Made with ❤️ for our special moments together</p>
+            <p>Made with <span class="heart-icon"><i class="fas fa-heart"></i></span> for our special moments together</p>
         </footer>
     </div>
     
@@ -285,6 +529,40 @@
             const filterButtons = document.querySelectorAll('.filter-btn');
             
             let mediaItems = [];
+            
+            // Create stars
+            createStars();
+            function createStars() {
+                const starsContainer = document.querySelector('.stars');
+                const starsCount = 150;
+                
+                for (let i = 0; i < starsCount; i++) {
+                    const star = document.createElement('div');
+                    star.classList.add('star');
+                    
+                    // Random position
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    
+                    // Random size (1-3px)
+                    const size = Math.random() * 2 + 1;
+                    
+                    // Random duration (3-8s)
+                    const duration = Math.random() * 5 + 3;
+                    
+                    // Random delay
+                    const delay = Math.random() * 5;
+                    
+                    star.style.left = `${x}%`;
+                    star.style.top = `${y}%`;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.setProperty('--duration', `${duration}s`);
+                    star.style.animationDelay = `${delay}s`;
+                    
+                    starsContainer.appendChild(star);
+                }
+            }
             
             // Fetch media files from GitHub repository
             async function fetchMediaFiles() {
@@ -369,14 +647,8 @@
                         
                         // Create a play button overlay
                         const playOverlay = document.createElement('div');
-                        playOverlay.style.position = 'absolute';
-                        playOverlay.style.top = '50%';
-                        playOverlay.style.left = '50%';
-                        playOverlay.style.transform = 'translate(-50%, -50%)';
-                        playOverlay.style.color = 'white';
-                        playOverlay.style.fontSize = '3rem';
-                        playOverlay.style.textShadow = '0 0 10px rgba(0,0,0,0.5)';
-                        playOverlay.innerHTML = '▶️';
+                        playOverlay.className = 'play-overlay';
+                        playOverlay.innerHTML = '<i class="fas fa-play"></i>';
                         mediaItem.appendChild(playOverlay);
                     }
                     
