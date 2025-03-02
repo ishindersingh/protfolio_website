@@ -188,38 +188,118 @@ async function sendMessage() {
     }
 }
 
-// Generate formatted FIR document
+// Generate formatted FIR document mimicking a standard Indian FIR
 function generateFIRDocument(aiResponse) {
     const station = document.getElementById('police-station').value || 'Not specified';
     const firType = document.getElementById('fir-type').value || 'Not specified';
     const officer = document.getElementById('officer-name').value || 'Not specified';
 
     const firContent = `
-# First Information Report (FIR)
-## ${firNumber}
-
-**Date & Time of Report:** ${getCurrentDateTime()}\n
-**Police Station:** ${station}\n
-**FIR Type:** ${firType}\n
-**Reporting Officer:** ${officer}\n
-**Incident Details:**\n
-${aiResponse.trim()}\n
-**Additional Notes:**\n
-- This FIR is generated electronically via the Police FIR Assistant.\n
-- Please contact the reporting officer for further details or verification.
-
-*Generated on ${getCurrentDateTime()}*
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>First Information Report - ${firNumber}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #ffffff;
+            color: #000000;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 100px;
+            height: auto;
+        }
+        .fir-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d32f2f;
+            margin-bottom: 10px;
+        }
+        .fir-details {
+            border: 2px solid #000000;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .fir-details p {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+        .incident {
+            margin-top: 20px;
+            border-top: 2px solid #000000;
+            padding-top: 15px;
+        }
+        .signature {
+            margin-top: 30px;
+            text-align: right;
+            border-top: 2px solid #000000;
+            padding-top: 15px;
+        }
+        .signature p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="/api/placeholder/60/60" alt="Indian Police Logo" class="police-logo">
+        <div class="fir-title">First Information Report</div>
+    </div>
+    <div class="fir-details">
+        <p><strong>FIR Number:</strong> ${firNumber}</p>
+        <p><strong>Date & Time of Report:</strong> ${getCurrentDateTime()}</p>
+        <p><strong>Police Station:</strong> ${station}</p>
+        <p><strong>Type of Incident:</strong> ${firType}</p>
+        <p><strong>Reporting Officer:</strong> ${officer}</p>
+    </div>
+    <div class="incident">
+        <h3>Incident Details:</h3>
+        <p>${aiResponse.trim()}</p>
+    </div>
+    <div class="signature">
+        <p>________________________</p>
+        <p>${officer || 'Reporting Officer'}</p>
+        <p>Signature & Designation</p>
+    </div>
+</body>
+</html>
     `.trim();
 
     // Update download and print functionality to use this FIR document
     updateFIRActions(firContent);
-    return firContent;
+    return firContent; // This will be displayed as HTML in the chat box
 }
 
 // Update FIR download and print actions
 function updateFIRActions(firContent) {
+    // For download, convert HTML to plain text for .txt file
+    const plainTextContent = `
+First Information Report - ${firNumber}
+
+FIR Number: ${firNumber}
+Date & Time of Report: ${getCurrentDateTime()}
+Police Station: ${document.getElementById('police-station').value || 'Not specified'}
+Type of Incident: ${document.getElementById('fir-type').value || 'Not specified'}
+Reporting Officer: ${document.getElementById('officer-name').value || 'Not specified'}
+
+Incident Details:
+${firContent.match(/<p>(.*?)<\/p>/g)?.map(p => p.replace(/<\/?p>/g, '').trim()).join('\n') || 'No details available'}
+
+Signature:
+________________________
+${document.getElementById('officer-name').value || 'Reporting Officer'}
+Signature & Designation
+    `.trim();
+
     document.getElementById('download-fir').onclick = () => {
-        const blob = new Blob([firContent], { type: 'text/plain' });
+        const blob = new Blob([plainTextContent], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -229,15 +309,8 @@ function updateFIRActions(firContent) {
     };
 
     document.getElementById('print-fir').onclick = () => {
-        const printWindow = window.open('', '', 'height=600,width=800');
-        printWindow.document.write(`
-            <html>
-            <head><title>FIR Document - ${firNumber}</title></head>
-            <body style="font-family: Arial, sans-serif; padding: 20px;">
-                <pre style="white-space: pre-wrap;">${firContent}</pre>
-            </body>
-            </html>
-        `);
+        const printWindow = window.open('', '', 'height=800,width=1000');
+        printWindow.document.write(firContent);
         printWindow.document.close();
         printWindow.print();
     };
@@ -250,16 +323,10 @@ function addMessage(role, content) {
     
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
-    contentDiv.innerHTML = marked.parse(content, {
-        highlight: (code, lang) => {
-            const language = Prism.languages[lang] ? lang : 'plaintext';
-            return Prism.highlight(code, Prism.languages[language], language);
-        }
-    });
+    contentDiv.innerHTML = content; // Use raw HTML for FIR document display in chat box
     
     messageDiv.appendChild(contentDiv);
     chatBox.appendChild(messageDiv);
-    Prism.highlightAllUnder(contentDiv);
 
     if (role !== 'error') {
         conversationHistory.push({
