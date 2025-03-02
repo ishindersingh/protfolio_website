@@ -32,7 +32,22 @@ function updateFIRInfo() {
     document.getElementById('fir-station').textContent = station || '-';
 }
 
-// Populate input with FIR details
+// Predefined prompt to guide AI behavior for FIR writing
+const FIR_PROMPT = `
+You are a Police FIR Assistant for the Indian Police Department. Your task is to write a formal, detailed, and accurate First Information Report (FIR) based on the user's description of an incident. Use the following structure and guidelines:
+
+1. **Introduction**: Start with "First Information Report (FIR) lodged at [Police Station Name] on [Date & Time]."
+2. **Incident Details**: Include a clear, concise description of what happened, when, where, and who was involved (names, addresses if provided, witnesses, etc.). Use formal language, e.g., "On [Date], at [Time], an incident of [FIR Type] occurred at [Location], involving [Persons Involved]."
+3. **Nature of Offence**: Specify the nature of the offense (e.g., theft, assault, fraud) and, if known, reference relevant sections of the Indian Penal Code (IPC) or other applicable laws.
+4. **Evidence/Witnesses**: Mention any evidence (e.g., images, objects) or witnesses provided by the user.
+5. **Conclusion**: End with "The complainant has provided the above details, and further investigation is recommended. This FIR is registered under the supervision of [Reporting Officer]."
+
+Ensure the tone is official, precise, and legal, avoiding informal language or humor. Use only the information provided by the user, and do not invent details unless explicitly stated. If information is missing (e.g., police station, officer name), note it as "Not specified."
+
+Return only the FIR text, formatted as plain text with proper line breaks and paragraphs, without any additional commentary or markup.
+`;
+
+// Populate input with FIR details and predefined prompt
 function updateInputPrompt() {
     const station = document.getElementById('police-station').value;
     const firType = document.getElementById('fir-type').value;
@@ -44,7 +59,7 @@ function updateInputPrompt() {
     if (station) prompt += `Police Station: ${station}\n`;
     if (firType) prompt += `FIR Type: ${firType}\n`;
     if (officer) prompt += `Reporting Officer: ${officer}\n`;
-    prompt += '\nPlease describe the incident in detail:';
+    prompt += '\n' + FIR_PROMPT + '\nPlease describe the incident in detail:';
 
     const input = document.getElementById('user-input');
     if (!input.value || !conversationHistory.length) {
@@ -144,7 +159,7 @@ async function sendMessage() {
     input.value = '';
     const chatBox = document.getElementById('chat-box');
 
-    // Add user message
+    // Add user message (including the predefined prompt if present)
     addMessage('user', message);
 
     try {
@@ -188,7 +203,7 @@ async function sendMessage() {
     }
 }
 
-// Generate formatted FIR document mimicking a standard Indian FIR
+// Generate formatted FIR document mimicking an authentic Indian FIR
 function generateFIRDocument(aiResponse) {
     const station = document.getElementById('police-station').value || 'Not specified';
     const firType = document.getElementById('fir-type').value || 'Not specified';
@@ -202,39 +217,65 @@ function generateFIRDocument(aiResponse) {
     <title>First Information Report - ${firNumber}</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 20px;
             background-color: #ffffff;
             color: #000000;
+            line-height: 1.6;
         }
         .header {
             text-align: center;
             margin-bottom: 20px;
         }
         .header img {
-            width: 100px;
+            width: 120px;
             height: auto;
         }
         .fir-title {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             color: #d32f2f;
+            margin-bottom: 15px;
+            text-decoration: underline;
+        }
+        .fir-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000000;
             margin-bottom: 10px;
+            text-align: center;
         }
         .fir-details {
             border: 2px solid #000000;
             padding: 15px;
             margin-bottom: 20px;
+            background-color: #f9f9f9;
         }
         .fir-details p {
-            margin: 5px 0;
-            line-height: 1.5;
+            margin: 8px 0;
+            font-size: 14px;
         }
         .incident {
             margin-top: 20px;
             border-top: 2px solid #000000;
             padding-top: 15px;
+        }
+        .incident h3 {
+            font-size: 20px;
+            color: #0a3d91;
+            margin-bottom: 10px;
+        }
+        .incident p {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .legal-notice {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666666;
+            border-top: 1px solid #000000;
+            padding-top: 10px;
         }
         .signature {
             margin-top: 30px;
@@ -244,6 +285,15 @@ function generateFIRDocument(aiResponse) {
         }
         .signature p {
             margin: 5px 0;
+            font-size: 14px;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #666666;
+            margin-top: 20px;
+            border-top: 1px solid #000000;
+            padding-top: 10px;
         }
     </style>
 </head>
@@ -251,22 +301,32 @@ function generateFIRDocument(aiResponse) {
     <div class="header">
         <img src="/api/placeholder/60/60" alt="Indian Police Logo" class="police-logo">
         <div class="fir-title">First Information Report</div>
+        <div class="fir-number">FIR No: ${firNumber}</div>
     </div>
     <div class="fir-details">
-        <p><strong>FIR Number:</strong> ${firNumber}</p>
-        <p><strong>Date & Time of Report:</strong> ${getCurrentDateTime()}</p>
         <p><strong>Police Station:</strong> ${station}</p>
-        <p><strong>Type of Incident:</strong> ${firType}</p>
-        <p><strong>Reporting Officer:</strong> ${officer}</p>
+        <p><strong>Date & Time of Occurrence:</strong> ${getCurrentDateTime()}</p>
+        <p><strong>Nature of Offence:</strong> ${firType}</p>
+        <p><strong>Reported By:</strong> ${officer || 'Not specified'}</p>
+        <p><strong>Place of Occurrence:</strong> [Extracted from incident details or Not specified]</p>
     </div>
     <div class="incident">
-        <h3>Incident Details:</h3>
+        <h3>Details of the Incident:</h3>
         <p>${aiResponse.trim()}</p>
+    </div>
+    <div class="legal-notice">
+        <p>*Note: This FIR is a preliminary record of information as provided by the complainant. It does not constitute evidence or a final determination of guilt. Further investigation under the supervision of the police authorities is required as per the provisions of the Code of Criminal Procedure, 1973 (CrPC), and the Indian Penal Code (IPC).</p>
+        <p>This document is subject to verification and may be amended based on subsequent findings or additional evidence.</p>
     </div>
     <div class="signature">
         <p>________________________</p>
         <p>${officer || 'Reporting Officer'}</p>
-        <p>Signature & Designation</p>
+        <p>Station House Officer, ${station || 'Not specified'}</p>
+        <p>Date: ${getCurrentDateTime()}</p>
+    </div>
+    <div class="footer">
+        <p>Government of India | Ministry of Home Affairs | Indian Police Department</p>
+        <p>For official use only. Unauthorized reproduction or alteration is punishable under law.</p>
     </div>
 </body>
 </html>
@@ -279,23 +339,33 @@ function generateFIRDocument(aiResponse) {
 
 // Update FIR download and print actions
 function updateFIRActions(firContent) {
-    // For download, convert HTML to plain text for .txt file
+    // For download, convert HTML to plain text for .txt file, mimicking the FIR format
     const plainTextContent = `
 First Information Report - ${firNumber}
 
-FIR Number: ${firNumber}
-Date & Time of Report: ${getCurrentDateTime()}
+FIR No: ${firNumber}
 Police Station: ${document.getElementById('police-station').value || 'Not specified'}
-Type of Incident: ${document.getElementById('fir-type').value || 'Not specified'}
-Reporting Officer: ${document.getElementById('officer-name').value || 'Not specified'}
+Date & Time of Occurrence: ${getCurrentDateTime()}
+Nature of Offence: ${document.getElementById('fir-type').value || 'Not specified'}
+Reported By: ${document.getElementById('officer-name').value || 'Not specified'}
+Place of Occurrence: [Extracted from incident details or Not specified]
 
-Incident Details:
+Details of the Incident:
 ${firContent.match(/<p>(.*?)<\/p>/g)?.map(p => p.replace(/<\/?p>/g, '').trim()).join('\n') || 'No details available'}
+
+Legal Notice:
+*Note: This FIR is a preliminary record of information as provided by the complainant. It does not constitute evidence or a final determination of guilt. Further investigation under the supervision of the police authorities is required as per the provisions of the Code of Criminal Procedure, 1973 (CrPC), and the Indian Penal Code (IPC).
+This document is subject to verification and may be amended based on subsequent findings or additional evidence.
 
 Signature:
 ________________________
 ${document.getElementById('officer-name').value || 'Reporting Officer'}
-Signature & Designation
+Station House Officer, ${document.getElementById('police-station').value || 'Not specified'}
+Date: ${getCurrentDateTime()}
+
+Footer:
+Government of India | Ministry of Home Affairs | Indian Police Department
+For official use only. Unauthorized reproduction or alteration is punishable under law.
     `.trim();
 
     document.getElementById('download-fir').onclick = () => {
@@ -309,7 +379,7 @@ Signature & Designation
     };
 
     document.getElementById('print-fir').onclick = () => {
-        const printWindow = window.open('', '', 'height=800,width=1000');
+        const printWindow = window.open('', '', 'height=1000,width=1200');
         printWindow.document.write(firContent);
         printWindow.document.close();
         printWindow.print();
