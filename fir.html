@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Police FIR Assistant</title>
+    <link rel="stylesheet" href="firjscss/firstyles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <img src="/api/placeholder/60/60" alt="Indian Police Logo" class="police-logo">
+            <h1 class="headline">Police FIR Assistant</h1>
+        </div>
+        <div class="header-info">
+            <div class="station-info">
+                <select id="police-station" class="station-select">
+                    <option value="">Select Police Station</option>
+                    <option value="Central Delhi">Central Delhi</option>
+                    <option value="North Delhi">North Delhi</option>
+                    <option value="South Delhi">South Delhi</option>
+                    <option value="East Delhi">East Delhi</option>
+                    <option value="West Delhi">West Delhi</option>
+                </select>
+            </div>
+            <div class="date-info">
+                <span id="current-date"></span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="chat-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>FIR Guidelines</h3>
+            </div>
+            <div class="sidebar-content">
+                <ul>
+                    <li>Provide complete details about the incident</li>
+                    <li>Include names, locations, and timings</li>
+                    <li>Describe any injuries or damages</li>
+                    <li>Mention any witnesses present</li>
+                    <li>Include details of stolen/damaged property</li>
+                    <li>Specify the sections of IPC if known</li>
+                </ul>
+                <div class="fir-type">
+                    <h4>Select FIR Type:</h4>
+                    <select id="fir-type" class="fir-select">
+                        <option value="theft">Theft/Robbery</option>
+                        <option value="assault">Assault/Violence</option>
+                        <option value="fraud">Fraud/Cheating</option>
+                        <option value="property">Property Dispute</option>
+                        <option value="accident">Accident</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div id="chat-box" class="chat-box">
+                <div class="message ai-message">
+                    <div class="message-content">
+                        <p>Welcome to the Police FIR Assistant. Please describe the incident in detail, including:</p>
+                        <ul>
+                            <li>What happened</li>
+                            <li>When and where it occurred</li>
+                            <li>People involved (names, addresses)</li>
+                            <li>Any evidence or witnesses</li>
+                        </ul>
+                        <p>You can type or use the voice input button to narrate the incident.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="input-container">
+                <div class="action-buttons">
+                    <input type="file" id="image-upload" accept="image/*" hidden>
+                    <button class="icon-button" onclick="document.getElementById('image-upload').click()" title="Upload Evidence Image">
+                        <svg viewBox="0 0 24 24" width="24" height="24" class="icon">
+                            <path fill="currentColor" d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
+                        </svg>
+                    </button>
+                    <button id="voice-button" class="icon-button" title="Voice Input">
+                        <svg viewBox="0 0 24 24" width="24" height="24" class="icon">
+                            <path fill="currentColor" d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/>
+                        </svg>
+                    </button>
+                </div>
+                <textarea id="user-input" placeholder="Describe the incident in detail..." rows="3"></textarea>
+                <button class="send-button" onclick="sendMessage()">
+                    <svg viewBox="0 0 24 24" width="24" height="24" class="send-icon">
+                        <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="action-bar">
+                <button id="download-fir" class="action-button">Download FIR</button>
+                <button id="print-fir" class="action-button">Print FIR</button>
+                <button id="clear-chat" class="action-button">Clear Chat</button>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-header">
+                <h3>Case Information</h3>
+            </div>
+            <div class="info-content">
+                <div class="info-item">
+                    <label>FIR Number:</label>
+                    <span id="fir-number">Not Generated</span>
+                </div>
+                <div class="info-item">
+                    <label>Date & Time:</label>
+                    <span id="fir-datetime">-</span>
+                </div>
+                <div class="info-item">
+                    <label>Station:</label>
+                    <span id="fir-station">-</span>
+                </div>
+                <div class="info-item">
+                    <label>Officer:</label>
+                    <input type="text" id="officer-name" placeholder="Enter officer name">
+                </div>
+                <div class="info-item">
+                    <label>IPC Sections:</label>
+                    <span id="ipc-sections">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="voice-indicator" class="voice-indicator">
+        <div class="voice-pulse"></div>
+        <span>Listening...</span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="firjscss/firscript.js"></script>
+</body>
+</html>
