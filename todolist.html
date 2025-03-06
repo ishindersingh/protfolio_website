@@ -3,87 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List</title>
+    <title>TaskMaster - Your Personal To-Do App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #388E3C;
+            --background: #f8f9fa;
+            --card-bg: white;
+            --text-color: #333;
+            --border-radius: 8px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #e0f2e9;
-            text-align: center;
-            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
+        header {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 16px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .app-title {
+            margin: 0;
+            font-size: 24px;
+        }
+
         .container {
-            max-width: 400px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
         }
-        input {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
         }
-        .task {
+
+        #taskInput {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            font-size: 16px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        #taskInput:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        #addButton {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        #addButton:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .task-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .task-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #f0fff4;
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 5px;
+            padding: 16px;
+            background: white;
+            margin-bottom: 10px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+
+        .task-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            word-break: break-word;
+        }
+
+        .task-text {
+            margin-left: 12px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background: none;
+            border: none;
             cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: var(--transition);
         }
-        .done {
+
+        .btn-complete {
+            color: var(--primary-color);
+        }
+
+        .btn-delete {
+            color: #f44336;
+        }
+
+        .btn:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .done .task-text {
             text-decoration: line-through;
-            color: gray;
+            color: #888;
         }
-        .cross {
-            color: red;
+
+        .done {
+            border-left-color: #888;
+            background-color: #f9f9f9;
         }
-        .tick {
-            color: green;
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px 0;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: #ddd;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .api-status {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #666;
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1 class="app-title" style="text-align: center;">TaskMaster</h1>
+    </header>
+
     <div class="container">
-        <h2>To-Do List</h2>
-        <input type="text" id="taskInput" placeholder="Type your work here..." onkeypress="handleKeyPress(event)">
-        <div id="taskList"></div>
+        <div class="input-group">
+            <input type="text" id="taskInput" placeholder="Add a new task..." autofocus>
+            <button id="addButton"><i class="fas fa-plus"></i></button>
+        </div>
+        
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner fa-spin"></i> Loading your tasks...
+        </div>
+        
+        <ul id="taskList" class="task-list"></ul>
+        
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="fas fa-clipboard-list"></i>
+            <p>Your task list is empty. Add a new task to get started!</p>
+        </div>
     </div>
+
+    <div id="toast" class="toast"></div>
+    <div id="apiStatus" class="api-status"></div>
+
     <script>
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                addTask();
+        // Replace with your actual Render.com backend URL
+        const API_BASE_URL = 'https://todolist-sever.onrender.com';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const taskInput = document.getElementById('taskInput');
+            const addButton = document.getElementById('addButton');
+            const taskList = document.getElementById('taskList');
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('emptyState');
+            const toast = document.getElementById('toast');
+            const apiStatus = document.getElementById('apiStatus');
+            
+            // Check API connection
+            checkApiConnection();
+            
+            // Add event listeners
+            taskInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addTask();
+                }
+            });
+            
+            addButton.addEventListener('click', addTask);
+            
+            // Function to check API connection
+            function checkApiConnection() {
+                fetch(`${API_BASE_URL}/health`)
+                    .then(response => {
+                        if (response.ok) {
+                            apiStatus.textContent = 'Connected to server';
+                            apiStatus.style.color = '#4CAF50';
+                            // Load tasks once we've confirmed the connection
+                            fetchTasks();
+                        } else {
+                            throw new Error('API connection failed');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('API connection error:', error);
+                        apiStatus.textContent = 'Server connection error';
+                        apiStatus.style.color = '#f44336';
+                        showToast('Cannot connect to server. Please try again later.');
+                        loading.style.display = 'none';
+                    });
             }
-        }
-
-        function addTask() {
-            let input = document.getElementById("taskInput");
-            let text = input.value.trim();
-            if (!text) return;
-
-            let taskDiv = document.createElement("div");
-            taskDiv.classList.add("task");
-            taskDiv.innerHTML = `<span>${text}</span> <span class='cross' onclick='toggleTask(this)'>✖</span>`;
-            document.getElementById("taskList").appendChild(taskDiv);
-            input.value = "";
-        }
-
-        function toggleTask(element) {
-            let parent = element.parentNode;
-            parent.classList.toggle("done");
-            if (element.classList.contains("cross")) {
-                element.classList.replace("cross", "tick");
-                element.innerHTML = "✔";
-            } else {
-                element.classList.replace("tick", "cross");
-                element.innerHTML = "✖";
+            
+            // Function to show toast notification
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
             }
-        }
+            
+            // Fetch all tasks from the server
+            function fetchTasks() {
+                loading.style.display = 'block';
+                taskList.style.display = 'none';
+                emptyState.style.display = 'none';
+                
+                fetch(`${API_BASE_URL}/api/tasks`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(tasks => {
+                        renderTasks(tasks);
+                        loading.style.display = 'none';
+                        if (tasks.length === 0) {
+                            emptyState.style.display = 'block';
+                        } else {
+                            taskList.style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching tasks:', error);
+                        loading.style.display = 'none';
+                        showToast('Failed to load tasks. Please try again.');
+                    });
+            }
+            
+            // Render tasks to the DOM
+            function renderTasks(tasks) {
+                taskList.innerHTML = '';
+                
+                tasks.forEach(task => {
+                    const li = document.createElement('li');
+                    li.className = `task-item ${task.completed ? 'done' : ''}`;
+                    li.dataset.id = task.id;
+                    
+                    li.innerHTML = `
+                        <div class="task-content">
+                            <span class="task-text">${escapeHtml(task.text)}</span>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-complete" title="${task.completed ? 'Mark as incomplete' : 'Mark as complete'}">
+                                <i class="fas ${task.completed ? 'fa-undo' : 'fa-check'}"></i>
+                            </button>
+                            <button class="btn btn-delete" title="Delete task">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Add event listeners to the buttons
+                    const completeBtn = li.querySelector('.btn-complete');
+                    const deleteBtn = li.querySelector('.btn-delete');
+                    
+                    completeBtn.addEventListener('click', function() {
+                        toggleTaskCompletion(task.id, !task.completed);
+                    });
+                    
+                    deleteBtn.addEventListener('click', function() {
+                        deleteTask(task.id);
+                    });
+                    
+                    taskList.appendChild(li);
+                });
+            }
+            
+            // Add a new task
+            function addTask() {
+                const text = taskInput.value.trim();
+                if (!text) return;
+                
+                const newTask = {
+                    text: text,
+                    completed: false
+                };
+                
+                fetch(`${API_BASE_URL}/api/tasks`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newTask)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(task => {
+                    // Clear input field
+                    taskInput.value = '';
+                    
+                    // Refresh the task list
+                    fetchTasks();
+                    showToast('Task added successfully!');
+                })
+                .catch(error => {
+                    console.error('Error adding task:', error);
+                    showToast('Failed to add task. Please try again.');
+                });
+            }
+            
+            // Toggle task completion status
+            function toggleTaskCompletion(taskId, completed) {
+                fetch(`${API_BASE_URL}/api/tasks/${taskId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ completed })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(task => {
+                    // Refresh the task list
+                    fetchTasks();
+                    showToast(completed ? 'Task marked as completed!' : 'Task marked as incomplete!');
+                })
+                .catch(error => {
+                    console.error('Error updating task:', error);
+                    showToast('Failed to update task. Please try again.');
+                });
+            }
+            
+            // Delete a task
+            function deleteTask(taskId) {
+                fetch(`${API_BASE_URL}/api/tasks/${taskId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    // Refresh the task list
+                    fetchTasks();
+                    showToast('Task deleted successfully!');
+                })
+                .catch(error => {
+                    console.error('Error deleting task:', error);
+                    showToast('Failed to delete task. Please try again.');
+                });
+            }
+            
+            // Helper function to escape HTML
+            function escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+        });
     </script>
 </body>
 </html>
