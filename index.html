@@ -161,7 +161,7 @@
             display: flex;
             gap: 15px;
             justify-content: center;
-            flex-wrap: flex-wrap;
+            flex-wrap: wrap;
         }
         
         .section {
@@ -403,6 +403,7 @@
             border-top: 1px solid rgba(107, 72, 255, 0.2);
         }
         
+        /* Animation */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -592,12 +593,13 @@
         </div>
     </section>
     
-    <section class="section about" id="about" style="background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://raw.githubusercontent.com/ishindersingh/snaps/main/Computer.png') center/cover no-repeat fixed;">
+    <section class="section about" id="about">
         <h2 class="section-title fade-in">About Us</h2>
         <div class="about-content fade-in delay-1">
             <div class="about-text">
-                <p>Founded by Ishinder Singh, a computer science student at Chandigarh University, IRA transforms advanced research into practical solutions through cutting-edge technology.</p>
-                <p>Our mission is to bridge theoretical research and real-world applications, focusing on automation, AI, and sustainable technology innovations.</p>
+                <p>Founded by Ishinder Singh, a dedicated computer science student at Chandigarh University, IRA emerged from a vision to convert advanced research into tangible products that address real-world challenges.</p>
+                <p>At IRA, we harness the potential of deep technology to foster innovation and deliver sustainable value. Our founder's expertise in computer science, paired with an entrepreneurial spirit, positions us as leaders in technological progress.</p>
+                <p>Our mission is clear yet bold: to bridge the gap between theoretical research and practical applications, transforming concepts into inventions and prototypes into market-ready solutions. We are dedicated to advancing automation, artificial intelligence, and sustainable technology.</p>
             </div>
             <div class="about-image">
                 <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/astronot.png" alt="Astronaut - IRA Vision">
@@ -658,7 +660,7 @@
             </div>
             
             <div class="project-card fade-in delay-2">
-                <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/AI_FIR.png" alt="AI FIR Generator" class="project-img">
+                <img src="https://github.com/ishindersingh/snaps/blob/main/AI_FIR.png" alt="AI FIR Generator" class="project-img">
                 <div class="project-info">
                     <h3>AI FIR Generator</h3>
                     <p>An intelligent system that converts informal incident descriptions into formal First Information Reports (FIRs) with comprehensive details, ready for printing or downloading.</p>
@@ -667,18 +669,6 @@
                         <div class="progress" style="width: 65%"></div>
                     </div>
                     <a href="https://ishinders.me/fir" target="_blank" class="website-link">Visit AI FIR →</a>
-                </div>
-            </div>
-
-            <div class="project-card fade-in delay-3">
-                <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/Computer.png" alt="Computer Automation using AI" class="project-img">
-                <div class="project-info">
-                    <h3>Computer Automation using AI</h3>
-                    <p>A unique AI-powered program that converts any given task into computer-understandable language and executes it in real-time, revolutionizing automation capabilities.</p>
-                    <p><strong>Progress:</strong> Core AI system developed; currently refining task conversion algorithms and expanding functionality.</p>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 75%"></div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -716,6 +706,7 @@
     </footer>
     
     <script>
+        // Hamburger menu toggle
         document.addEventListener('DOMContentLoaded', () => {
             const hamburger = document.querySelector('.hamburger');
             const navLinks = document.querySelector('.nav-links');
@@ -724,6 +715,7 @@
                 navLinks.classList.toggle('active');
             });
             
+            // Add animation to elements when they come into view
             const observerOptions = {
                 threshold: 0.1,
                 rootMargin: "0px 0px -100px 0px"
@@ -742,6 +734,7 @@
                 observer.observe(el);
             });
             
+            // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -755,6 +748,7 @@
                             behavior: 'smooth'
                         });
                         
+                        // Close mobile menu if open
                         navLinks.classList.remove('active');
                     }
                 });
