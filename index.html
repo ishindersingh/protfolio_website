@@ -33,9 +33,16 @@
             box-shadow: 0 4px 15px rgba(107, 72, 255, 0.3);
         }
         
-        .logo img {
-            height: 60px; /* Adjusted size for navbar */
-            width: auto;
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .logo span {
+            color: #6B48FF;
         }
         
         .nav-links {
@@ -154,7 +161,7 @@
             display: flex;
             gap: 15px;
             justify-content: center;
-            flex-wrap: wrap;
+            flex-wrap: flex-wrap;
         }
         
         .section {
@@ -379,28 +386,11 @@
         }
         
         .contact p {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             font-size: 18px;
             font-weight: 400;
             color: #eee;
             line-height: 1.8;
-        }
-        
-        .contact-details {
-            margin-bottom: 30px;
-        }
-        
-        .contact-details p {
-            margin-bottom: 10px;
-        }
-        
-        .contact-details a {
-            color: #00D4B4;
-            text-decoration: none;
-        }
-        
-        .contact-details a:hover {
-            text-decoration: underline;
         }
         
         footer {
@@ -471,10 +461,6 @@
             
             .navbar {
                 padding: 10px 5%;
-            }
-            
-            .logo img {
-                height: 30px; /* Smaller size for mobile */
             }
             
             .hero {
@@ -548,8 +534,8 @@
         }
         
         @media screen and (max-width: 480px) {
-            .logo img {
-                height: 25px; /* Even smaller for very small screens */
+            .logo {
+                font-size: 22px;
             }
             
             .hero-content h1 {
@@ -584,9 +570,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">
-            <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/IRA_logo.svg" alt="IRA Logo">
-        </div>
+        <div class="logo">I<span>RA</span></div>
         <div class="hamburger">☰</div>
         <div class="nav-links">
             <a href="#about">About Us</a>
@@ -723,11 +707,6 @@
         <h2 class="section-title fade-in">Contact Us</h2>
         <div class="container fade-in delay-1">
             <p>Interested in partnering with us on this journey of innovation? Have questions about our projects or investment opportunities? We'd love to hear from you.</p>
-            <div class="contact-details">
-                <p><strong>Phone:</strong> +91 82 888 98 544</p>
-                <p><strong>Address:</strong> Mamupur, Near Chandigarh University</p>
-                <p><strong>Instagram:</strong> <a href="https://www.instagram.com/iishinder" target="_blank">@iishinder</a></p>
-            </div>
             <a href="https://wa.me/+918288898544?text=Hey,%20I'm%20interested%20in%20your%20project." target="_blank" class="action-btn">Get in Touch</a>
         </div>
     </section>
