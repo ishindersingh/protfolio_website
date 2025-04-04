@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +12,7 @@
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
         }
-        
+
         body {
             background-color: #000;
             color: #fff;
@@ -19,7 +20,7 @@
             font-size: 20px;
             line-height: 2;
         }
-        
+
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -31,7 +32,7 @@
             z-index: 1000;
             box-shadow: 0 4px 15px rgba(107, 72, 255, 0.3);
         }
-        
+
         .logo {
             font-size: 28px;
             font-weight: bold;
@@ -39,16 +40,16 @@
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-        
+
         .logo span {
             color: #6B48FF;
         }
-        
+
         .nav-links {
             display: flex;
             gap: 20px;
         }
-        
+
         .nav-links a {
             color: #fff;
             text-decoration: none;
@@ -56,26 +57,31 @@
             font-size: 18px;
             transition: all 0.3s ease;
         }
-        
+
         .nav-links a:hover {
             color: #00D4B4;
         }
-        
+
         .hamburger {
             display: none;
             font-size: 30px;
             cursor: pointer;
             color: #fff;
         }
-        
+
         .action-btn {
-            background: linear-gradient(135deg, #6B48FF, #00D4B4); /* Sharper gradient */
+            background: linear-gradient(135deg, #6B48FF, #00D4B4);
+            /* Sharper gradient */
             color: #fff;
-            padding: 8px 20px; /* Compact and sharp */
-            border: 2px solid transparent; /* Border for definition */
-            border-radius: 8px; /* Modern, less rounded */
+            padding: 8px 20px;
+            /* Compact and sharp */
+            border: 2px solid transparent;
+            /* Border for definition */
+            border-radius: 8px;
+            /* Modern, less rounded */
             font-weight: 700;
-            font-size: 16px; /* Clean size */
+            font-size: 16px;
+            /* Clean size */
             text-transform: uppercase;
             letter-spacing: 1px;
             cursor: pointer;
@@ -84,26 +90,28 @@
             display: inline-block;
             box-shadow: 0 4px 12px rgba(107, 72, 255, 0.3);
         }
-        
+
         .action-btn:hover {
-            background: linear-gradient(135deg, #00D4B4, #6B48FF); /* Reverse gradient */
-            border-color: #fff; /* White border on hover */
+            background: linear-gradient(135deg, #00D4B4, #6B48FF);
+            /* Reverse gradient */
+            border-color: #fff;
+            /* White border on hover */
             transform: translateY(-2px);
             box-shadow: 0 6px 18px rgba(0, 212, 180, 0.5);
         }
-        
+
         .hero {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-                        url('https://raw.githubusercontent.com/ishindersingh/snaps/main/planet-earth-background.jpg') center/cover no-repeat;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                url('https://raw.githubusercontent.com/ishindersingh/snaps/main/planet-earth-background.jpg') center/cover no-repeat;
             text-align: center;
             padding: 30px 5%;
             position: relative;
         }
-        
+
         .hero-content h1 {
             font-size: 56px;
             font-weight: 800;
@@ -111,7 +119,7 @@
             color: #fff;
             text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.9);
         }
-        
+
         .hero-content p {
             font-size: 24px;
             font-weight: 500;
@@ -122,14 +130,15 @@
             color: #fff;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
         }
-        
+
         .buttons {
             display: flex;
-            gap: 15px; /* Tighter gap */
+            gap: 15px;
+            /* Tighter gap */
             justify-content: center;
             flex-wrap: wrap;
         }
-        
+
         .section {
             padding: 80px 5%;
             min-height: 70vh;
@@ -137,7 +146,7 @@
             flex-direction: column;
             justify-content: center;
         }
-        
+
         .section-title {
             font-size: 44px;
             font-weight: 800;
@@ -147,7 +156,7 @@
             position: relative;
             text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
         }
-        
+
         .section-title:after {
             content: '';
             position: absolute;
@@ -158,7 +167,7 @@
             left: 50%;
             transform: translateX(-50%);
         }
-        
+
         .about-content {
             display: flex;
             align-items: center;
@@ -168,41 +177,41 @@
             border-radius: 15px;
             background: rgba(255, 255, 255, 0.05);
         }
-        
+
         .about-text {
             flex: 1;
             min-width: 280px;
         }
-        
+
         .about-text p {
             margin-bottom: 25px;
             font-size: 22px;
             font-weight: 500;
             color: #eee;
         }
-        
+
         .about-image {
             flex: 1;
             text-align: center;
             min-width: 280px;
         }
-        
+
         .about-image img {
             max-width: 100%;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(107, 72, 255, 0.2);
         }
-        
+
         .projects {
             background: #111;
         }
-        
+
         .project-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 25px;
         }
-        
+
         .project-card {
             background: #1a1a1a;
             border-radius: 15px;
@@ -210,12 +219,12 @@
             transition: all 0.3s ease;
             border: 1px solid rgba(107, 72, 255, 0.1);
         }
-        
+
         .project-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 15px 30px rgba(0, 212, 180, 0.3);
         }
-        
+
         .project-img {
             width: 100%;
             max-height: 300px;
@@ -223,25 +232,25 @@
             background: #000;
             padding: 10px;
         }
-        
+
         .project-info {
             padding: 25px;
         }
-        
+
         .project-info h3 {
             margin-bottom: 20px;
             color: #6B48FF;
             font-size: 26px;
             font-weight: bold;
         }
-        
+
         .project-info p {
             margin-bottom: 20px;
             font-size: 20px;
             font-weight: 500;
             color: #eee;
         }
-        
+
         .progress-bar {
             width: 100%;
             height: 12px;
@@ -250,40 +259,18 @@
             margin-top: 20px;
             overflow: hidden;
         }
-        
+
         .progress {
             height: 100%;
             background: linear-gradient(90deg, #6B48FF, #00D4B4);
         }
-        
-        .invest {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                        url('https://images.unsplash.com/photo-1551288049-b5f3c2c8c372?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
-            text-align: center;
-            padding: 80px 5%;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(107, 72, 255, 0.2);
-        }
-        
-        .invest p {
-            margin-bottom: 30px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            font-size: 22px;
-            font-weight: 500;
-            color: #eee;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
-            border-radius: 10px;
-        }
-        
+
         .plans {
             background: #111 url('https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
             background-blend-mode: overlay;
             padding: 80px 5%;
         }
-        
+
         .plan-content {
             max-width: 800px;
             margin: 0 auto;
@@ -295,20 +282,19 @@
             background: rgba(0, 0, 0, 0.7);
             box-shadow: 0 10px 30px rgba(0, 212, 180, 0.2);
         }
-        
+
         .plan-content p {
             margin-bottom: 25px;
         }
-        
+
         .contact {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                        url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
             text-align: center;
             padding: 80px 5%;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(107, 72, 255, 0.2);
         }
-        
+
         .contact p {
             margin-bottom: 30px;
             max-width: 600px;
@@ -317,11 +303,11 @@
             font-size: 22px;
             font-weight: 500;
             color: #eee;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.05);
             padding: 15px;
             border-radius: 10px;
         }
-        
+
         footer {
             background: #111;
             text-align: center;
@@ -331,14 +317,15 @@
             color: #eee;
             border-top: 1px solid rgba(107, 72, 255, 0.2);
         }
-        
+
         @media screen and (max-width: 768px) {
             .hamburger {
                 display: block;
             }
-            
+
             .nav-links {
-                display: none; /* Hidden by default */
+                display: none;
+                /* Hidden by default */
                 flex-direction: column;
                 position: absolute;
                 top: 60px;
@@ -348,113 +335,121 @@
                 padding: 20px 0;
                 text-align: center;
             }
-            
+
             .nav-links.active {
-                display: flex; /* Shown when active */
+                display: flex;
+                /* Shown when active */
             }
-            
+
             .nav-links a {
                 font-size: 16px;
                 padding: 10px 0;
             }
-            
+
             .navbar {
                 padding: 10px 5%;
             }
-            
+
             .hero {
                 padding: 20px 5%;
             }
-            
+
             .hero-content h1 {
                 font-size: 40px;
             }
-            
+
             .hero-content p {
                 font-size: 20px;
                 max-width: 100%;
             }
-            
+
             .buttons {
                 flex-direction: column;
                 gap: 10px;
             }
-            
+
             .action-btn {
-                padding: 6px 16px; /* Even more compact */
+                padding: 6px 16px;
+                /* Even more compact */
                 font-size: 14px;
             }
-            
+
             .section {
                 padding: 60px 5%;
                 min-height: auto;
             }
-            
+
             .section-title {
                 font-size: 36px;
                 margin-bottom: 40px;
             }
-            
+
             .about-content {
                 padding: 20px;
                 gap: 30px;
             }
-            
-            .about-text p, .invest p, .plan-content, .contact p {
+
+            .about-text p,
+            .invest p,
+            .plan-content,
+            .contact p {
                 font-size: 20px;
             }
-            
+
             .project-cards {
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
-            
+
             .project-img {
                 max-height: 250px;
             }
-            
+
             .project-info {
                 padding: 20px;
             }
-            
+
             .project-info h3 {
                 font-size: 24px;
             }
-            
+
             .project-info p {
                 font-size: 18px;
             }
         }
-        
+
         @media screen and (max-width: 480px) {
             .logo {
                 font-size: 24px;
             }
-            
+
             .hero-content h1 {
                 font-size: 32px;
             }
-            
+
             .hero-content p {
                 font-size: 18px;
             }
-            
+
             .section-title {
                 font-size: 30px;
             }
-            
-            .about-text p, .invest p, .plan-content, .contact p {
+
+            .about-text p,
+            .invest p,
+            .plan-content,
+            .contact p {
                 font-size: 18px;
             }
-            
+
             .project-img {
                 max-height: 200px;
             }
-            
+
             .project-info h3 {
                 font-size: 22px;
             }
-            
+
             .project-info p {
                 font-size: 16px;
             }
@@ -465,13 +460,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             const hamburger = document.querySelector('.hamburger');
             const navLinks = document.querySelector('.nav-links');
-            
+
             hamburger.addEventListener('click', () => {
                 navLinks.classList.toggle('active');
             });
         });
     </script>
 </head>
+
 <body>
     <nav class="navbar">
         <div class="logo">I<span>RA</span></div>
@@ -484,65 +480,75 @@
             <a href="#contact">Contact</a>
         </div>
     </nav>
-    
+
     <section class="hero">
         <div class="hero-content">
             <h1>From Idea to Invention, Prototype to Product</h1>
-            <p>Welcome to Ishinders Research Lab and Automation - where innovative technology transforms into practical solutions.<br> NOTE : Our website is still in dev phase.</p>
+            <p>Welcome to Ishinders Research Lab and Automation - where innovative technology transforms into practical
+                solutions.<br> NOTE : Our website is still in dev phase.</p>
             <div class="buttons">
-                <a href="#contact" class="action-btn">Contact</a>
-                <a href="https://wa.me/+your-number-here" target="_blank" class="action-btn">Invest</a>
+                <a href="#contact" class="action-btn">Contact & Invest</a>
             </div>
         </div>
     </section>
-    
-    <section class="section about" id="about">
-        <h2 class="section-title">About Us</h2>
-        <div class="about-content">
-            <div class="about-text">
-                <p>Founded by Ishinder Singh, a dedicated computer science student at Chandigarh University, IRA emerged from a vision to convert advanced research into tangible products that address real-world challenges.</p>
-                <p>At IRA, we harness the potential of deep technology to foster innovation and deliver sustainable value. Our founder’s expertise in computer science, paired with an entrepreneurial spirit, positions us as leaders in technological progress.</p>
-                <p>Our mission is clear yet bold: to bridge the gap between theoretical research and practical applications, transforming concepts into inventions and prototypes into market-ready solutions. We are dedicated to advancing automation, artificial intelligence, and sustainable technology.</p>
-            </div>
-            <div class="about-image">
-                <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/astronot.png" alt="Astronaut - IRA Vision">
-            </div>
-        </div>
-    </section>
-    
+
     <section class="section projects" id="projects">
         <h2 class="section-title">Current Projects</h2>
         <div class="project-cards">
             <div class="project-card">
-                <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/Ai_police.png" alt="AI Police" class="project-img">
+                <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/Ai_police.png" alt="AI Police"
+                    class="project-img">
                 <div class="project-info">
                     <h3>AI Police</h3>
-                    <p>An autonomous rotatable camera system equipped with advanced detection features to enhance security and surveillance.</p>
-                    <p><strong>Progress:</strong> In the final development phase, currently designing a professional 3D model for production.</p>
+                    <p>An autonomous rotatable camera system equipped with advanced detection features to enhance
+                        security and surveillance.</p>
+                    <p><strong>Progress:</strong> In the final development phase, currently designing a professional 3D
+                        model for production.</p>
                     <div class="progress-bar">
                         <div class="progress" style="width: 90%"></div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="project-card">
-                <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/peltier.png" alt="Advanced Cooling System" class="project-img">
+                <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/AI_FIR.png"
+                    alt="Advanced Cooling System" class="project-img">
+                <div class="project-info">
+                    <h3>AI FIR Generator</h3>
+                    <p>We've created this website to make filing an FIR easier. Just describe the incident in a casual
+                        conversation, and we’ll structure it into a formal, legally sound FIR for you.</p>
+                    <p><strong>Progress:</strong> Basic prototype completed; currently optimizing algorithms and designs
+                        for peak efficiency.</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 90%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/peltier.png"
+                    alt="Advanced Cooling System" class="project-img">
                 <div class="project-info">
                     <h3>Advanced Cooling System</h3>
-                    <p>A patentable semiconductor cooling technology utilizing vapor chambers and Peltier modules to revolutionize thermal management.</p>
-                    <p><strong>Progress:</strong> Basic prototype completed; currently optimizing algorithms and designs for peak efficiency.</p>
+                    <p>A patentable semiconductor cooling technology utilizing vapor chambers and Peltier modules to
+                        revolutionize thermal management.</p>
+                    <p><strong>Progress:</strong> Basic prototype completed; currently optimizing algorithms and designs
+                        for peak efficiency.</p>
                     <div class="progress-bar">
                         <div class="progress" style="width: 60%"></div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="project-card">
-                <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/rover.png" alt="Autonomous Space Rover" class="project-img">
+                <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/rover.png"
+                    alt="Autonomous Space Rover" class="project-img">
                 <div class="project-info">
                     <h3>Autonomous Space Rover</h3>
-                    <p>A robust vehicle designed for space exploration, capable of navigating challenging terrains and extreme conditions autonomously.</p>
-                    <p><strong>Progress:</strong> In early research stages, conducting feasibility studies and component evaluations.</p>
+                    <p>A robust vehicle designed for space exploration, capable of navigating challenging terrains and
+                        extreme conditions autonomously.</p>
+                    <p><strong>Progress:</strong> In early research stages, conducting feasibility studies and component
+                        evaluations.</p>
                     <div class="progress-bar">
                         <div class="progress" style="width: 20%"></div>
                     </div>
@@ -550,32 +556,61 @@
             </div>
         </div>
     </section>
-    
-    <section class="section invest" id="invest">
-        <h2 class="section-title">Invest With Us</h2>
-        <p>Investing in IRA today offers an opportunity akin to early investments in NVIDIA or Apple—a chance to join a pioneering venture with significant potential for long-term returns. Our innovative projects are poised to disrupt multiple industries.</p>
-        <p>Early investors will receive exclusive weekly progress reports, providing full transparency into our advancements and achievements.</p>
-        <p>The earlier you invest, the greater your potential gains as we expand our portfolio and bring groundbreaking technologies to market.</p>
-        <a href="https://wa.me/+your-number-here" target="_blank" class="action-btn">Invest</a>
+
+    <section class="section about" id="about">
+        <h2 class="section-title">About Us</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>Founded by Ishinder Singh, a passionate computer science student at Chandigarh University, IRA was
+                    born from a vision to transform cutting-edge research into real-world solutions.</p>
+                <p>At IRA, we leverage deep technology to drive innovation and create sustainable impact. With a strong
+                    foundation in computer science and an entrepreneurial mindset, our founder leads the way in
+                    technological advancement.</p>
+                <p>Our mission is simple yet ambitious: to bridge the gap between research and reality, turning ideas
+                    into inventions and prototypes into market-ready products. We are committed to pushing the
+                    boundaries of automation, artificial intelligence, and sustainable technology.</p>
+            </div>
+            <div class="about-image">
+                <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/astronot.png"
+                    alt="Astronaut - IRA Vision">
+            </div>
+        </div>
     </section>
-    
+
     <section class="section plans" id="plans">
         <h2 class="section-title">Our Vision</h2>
         <div class="plan-content">
-            <p>IRA aspires to transcend conventional research and development by establishing itself as a comprehensive knowledge hub—an online university that makes cutting-edge technical education accessible to all.</p>
-            <p>Through specialized courses and programs, we aim to empower aspiring innovators worldwide, fostering a global community of forward-thinking technologists.</p>
-            <p>Revenue from our educational initiatives will be reinvested into research and development, ensuring a sustainable cycle of innovation and growth for lasting impact.</p>
+            <p>
+                IRA is dedicated to transforming <strong>advanced research into real-world solutions</strong> by bridging the gap between 
+                <strong>education, innovation, and technology</strong>. We aim to create a <strong>global knowledge hub</strong> that offers 
+                <strong>cutting-edge technical education</strong>, empowering aspiring innovators through 
+                <strong>specialized courses, hands-on training, and industry-driven programs</strong>.
+            </p>
+            <p>
+                By reinvesting revenue from education into <strong>research and development</strong>, we ensure a 
+                <strong>sustainable cycle of innovation</strong>, turning <strong>ideas into inventions</strong> and 
+                <strong>learners into leaders</strong>.
+            </p>
         </div>
     </section>
-    
+
     <section class="section contact" id="contact">
         <h2 class="section-title">Contact Us</h2>
-        <p>Interested in partnering with us on this journey of innovation? Have questions about our projects or investment opportunities? We’d love to hear from you.</p>
-        <a href="https://wa.me/+your-number-here" target="_blank" class="action-btn">Connect</a>
+        <p>Interested in partnering with us on this journey of innovation? Have questions about our projects or investment opportunities? We’d love to hear from you!
+<br><strong>Contact Us:</strong>
+<br><strong>Phone:</strong> +91 82 888 98 544
+<br><strong>Email:</strong> <a href="mailto:ishinder.dev@gmail.com">ishinder.dev@gmail.com</a>
+<br><strong>Address:</strong> Mamupur, Kharar, Mohali
+<br><strong>Instagram:</strong> <a href="https://www.instagram.com/iishinder" target="_blank">@iishinder</a></p>
+
+        <div class="buttons">
+            <a href="https://wa.link/up68ac" class="action-btn">Let's Connect</a>
+        </div>
     </section>
-    
+
     <footer>
         <p>© 2025 Ishinders Research Lab and Automation (IRA). All Rights Reserved.</p>
     </footer>
 </body>
+
 </html>
