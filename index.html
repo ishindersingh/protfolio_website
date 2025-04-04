@@ -16,8 +16,8 @@
             background-color: #000;
             color: #fff;
             overflow-x: hidden;
-            font-size: 20px;
-            line-height: 2;
+            font-size: 18px;
+            line-height: 1.8;
         }
         
         .navbar {
@@ -25,23 +25,17 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 5%;
-            background: linear-gradient(45deg, rgba(0, 0, 0, 0.9), rgba(107, 72, 255, 0.2));
+            background: linear-gradient(45deg, rgba(0, 0, 0, 0.95), rgba(107, 72, 255, 0.3));
             position: fixed;
             width: 100%;
             z-index: 1000;
+            backdrop-filter: blur(8px);
             box-shadow: 0 4px 15px rgba(107, 72, 255, 0.3);
         }
         
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        
-        .logo span {
-            color: #6B48FF;
+        .logo img {
+            height: 60px; /* Adjusted size for navbar */
+            width: auto;
         }
         
         .nav-links {
@@ -53,8 +47,24 @@
             color: #fff;
             text-decoration: none;
             font-weight: 600;
-            font-size: 18px;
+            font-size: 16px;
             transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: linear-gradient(90deg, #6B48FF, #00D4B4);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover:after {
+            width: 100%;
         }
         
         .nav-links a:hover {
@@ -63,19 +73,19 @@
         
         .hamburger {
             display: none;
-            font-size: 30px;
+            font-size: 24px;
             cursor: pointer;
             color: #fff;
         }
         
         .action-btn {
-            background: linear-gradient(135deg, #6B48FF, #00D4B4); /* Sharper gradient */
+            background: linear-gradient(135deg, #6B48FF, #00D4B4);
             color: #fff;
-            padding: 8px 20px; /* Compact and sharp */
-            border: 2px solid transparent; /* Border for definition */
-            border-radius: 8px; /* Modern, less rounded */
+            padding: 8px 18px;
+            border: none;
+            border-radius: 6px;
             font-weight: 700;
-            font-size: 16px; /* Clean size */
+            font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 1px;
             cursor: pointer;
@@ -86,8 +96,7 @@
         }
         
         .action-btn:hover {
-            background: linear-gradient(135deg, #00D4B4, #6B48FF); /* Reverse gradient */
-            border-color: #fff; /* White border on hover */
+            background: linear-gradient(135deg, #00D4B4, #6B48FF);
             transform: translateY(-2px);
             box-shadow: 0 6px 18px rgba(0, 212, 180, 0.5);
         }
@@ -97,23 +106,41 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-                        url('https://raw.githubusercontent.com/ishindersingh/snaps/main/planet-earth-background.jpg') center/cover no-repeat;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://raw.githubusercontent.com/ishindersingh/snaps/main/planet-earth-background.jpg') center/cover no-repeat fixed;
             text-align: center;
             padding: 30px 5%;
             position: relative;
         }
         
+        .hero:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+        }
+        
         .hero-content h1 {
-            font-size: 56px;
+            font-size: 48px;
             font-weight: 800;
             margin-bottom: 25px;
             color: #fff;
             text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.9);
+            line-height: 1.2;
         }
         
         .hero-content p {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 500;
             margin-bottom: 30px;
             max-width: 800px;
@@ -125,21 +152,22 @@
         
         .buttons {
             display: flex;
-            gap: 15px; /* Tighter gap */
+            gap: 15px;
             justify-content: center;
             flex-wrap: wrap;
         }
         
         .section {
-            padding: 80px 5%;
-            min-height: 70vh;
+            padding: 100px 5%;
+            min-height: 60vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            position: relative;
         }
         
         .section-title {
-            font-size: 44px;
+            font-size: 38px;
             font-weight: 800;
             margin-bottom: 50px;
             text-align: center;
@@ -151,7 +179,7 @@
         .section-title:after {
             content: '';
             position: absolute;
-            width: 100px;
+            width: 80px;
             height: 4px;
             background: linear-gradient(90deg, #6B48FF, #00D4B4);
             bottom: -15px;
@@ -166,7 +194,9 @@
             flex-wrap: wrap;
             padding: 30px;
             border-radius: 15px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(26, 26, 26, 0.7);
+            box-shadow: 0 10px 30px rgba(107, 72, 255, 0.15);
+            backdrop-filter: blur(10px);
         }
         
         .about-text {
@@ -175,10 +205,11 @@
         }
         
         .about-text p {
-            margin-bottom: 25px;
-            font-size: 22px;
-            font-weight: 500;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 400;
             color: #eee;
+            line-height: 1.8;
         }
         
         .about-image {
@@ -191,63 +222,77 @@
             max-width: 100%;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(107, 72, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .about-image img:hover {
+            transform: scale(1.02);
         }
         
         .projects {
-            background: #111;
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                      url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat fixed;
         }
         
         .project-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
         }
         
         .project-card {
-            background: #1a1a1a;
-            border-radius: 15px;
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 12px;
             overflow: hidden;
             transition: all 0.3s ease;
             border: 1px solid rgba(107, 72, 255, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
         
         .project-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 15px 30px rgba(0, 212, 180, 0.3);
+            border-color: rgba(0, 212, 180, 0.3);
         }
         
         .project-img {
             width: 100%;
-            max-height: 300px;
-            object-fit: contain;
+            height: 220px;
+            object-fit: cover;
             background: #000;
-            padding: 10px;
         }
         
         .project-info {
             padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
         
         .project-info h3 {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             color: #6B48FF;
-            font-size: 26px;
+            font-size: 22px;
             font-weight: bold;
         }
         
         .project-info p {
-            margin-bottom: 20px;
-            font-size: 20px;
-            font-weight: 500;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 400;
             color: #eee;
+            flex-grow: 1;
         }
         
         .progress-bar {
             width: 100%;
-            height: 12px;
+            height: 10px;
             background-color: #333;
-            border-radius: 6px;
-            margin-top: 20px;
+            border-radius: 5px;
+            margin-top: 15px;
             overflow: hidden;
         }
         
@@ -256,80 +301,144 @@
             background: linear-gradient(90deg, #6B48FF, #00D4B4);
         }
         
+        .website-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #00D4B4;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .website-link:hover {
+            text-decoration: underline;
+        }
+        
         .invest {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                        url('https://images.unsplash.com/photo-1551288049-b5f3c2c8c372?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                        url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat fixed;
             text-align: center;
-            padding: 80px 5%;
+            position: relative;
+        }
+        
+        .invest .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(26, 26, 26, 0.7);
+            padding: 40px;
             border-radius: 15px;
+            backdrop-filter: blur(10px);
             box-shadow: 0 10px 30px rgba(107, 72, 255, 0.2);
         }
         
         .invest p {
-            margin-bottom: 30px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            font-size: 22px;
-            font-weight: 500;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 400;
             color: #eee;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
-            border-radius: 10px;
+            line-height: 1.8;
         }
         
         .plans {
-            background: #111 url('https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
-            background-blend-mode: overlay;
-            padding: 80px 5%;
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                        url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat fixed;
         }
         
         .plan-content {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            font-size: 22px;
-            font-weight: 500;
-            padding: 30px;
+            font-size: 18px;
+            font-weight: 400;
+            padding: 40px;
             border-radius: 15px;
             color: #eee;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(26, 26, 26, 0.7);
+            backdrop-filter: blur(10px);
             box-shadow: 0 10px 30px rgba(0, 212, 180, 0.2);
+            line-height: 1.8;
         }
         
         .plan-content p {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         
         .contact {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                        url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                        url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat fixed;
             text-align: center;
-            padding: 80px 5%;
+        }
+        
+        .contact .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(26, 26, 26, 0.7);
+            padding: 40px;
             border-radius: 15px;
+            backdrop-filter: blur(10px);
             box-shadow: 0 10px 30px rgba(107, 72, 255, 0.2);
         }
         
         .contact p {
-            margin-bottom: 30px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            font-size: 22px;
-            font-weight: 500;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 400;
             color: #eee;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
-            border-radius: 10px;
+            line-height: 1.8;
+        }
+        
+        .contact-details {
+            margin-bottom: 30px;
+        }
+        
+        .contact-details p {
+            margin-bottom: 10px;
+        }
+        
+        .contact-details a {
+            color: #00D4B4;
+            text-decoration: none;
+        }
+        
+        .contact-details a:hover {
+            text-decoration: underline;
         }
         
         footer {
             background: #111;
             text-align: center;
-            padding: 40px 5%;
-            font-size: 18px;
-            font-weight: 500;
+            padding: 30px 5%;
+            font-size: 16px;
+            font-weight: 400;
             color: #eee;
             border-top: 1px solid rgba(107, 72, 255, 0.2);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.6s;
         }
         
         @media screen and (max-width: 768px) {
@@ -338,97 +447,38 @@
             }
             
             .nav-links {
-                display: none; /* Hidden by default */
+                display: none;
                 flex-direction: column;
                 position: absolute;
                 top: 60px;
                 left: 0;
                 width: 100%;
                 background: rgba(0, 0, 0, 0.95);
+                backdrop-filter: blur(10px);
                 padding: 20px 0;
                 text-align: center;
+                z-index: 1000;
             }
             
             .nav-links.active {
-                display: flex; /* Shown when active */
+                display: flex;
             }
             
             .nav-links a {
                 font-size: 16px;
-                padding: 10px 0;
+                padding: 12px 0;
             }
             
             .navbar {
                 padding: 10px 5%;
             }
             
+            .logo img {
+                height: 30px; /* Smaller size for mobile */
+            }
+            
             .hero {
                 padding: 20px 5%;
-            }
-            
-            .hero-content h1 {
-                font-size: 40px;
-            }
-            
-            .hero-content p {
-                font-size: 20px;
-                max-width: 100%;
-            }
-            
-            .buttons {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .action-btn {
-                padding: 6px 16px; /* Even more compact */
-                font-size: 14px;
-            }
-            
-            .section {
-                padding: 60px 5%;
-                min-height: auto;
-            }
-            
-            .section-title {
-                font-size: 36px;
-                margin-bottom: 40px;
-            }
-            
-            .about-content {
-                padding: 20px;
-                gap: 30px;
-            }
-            
-            .about-text p, .invest p, .plan-content, .contact p {
-                font-size: 20px;
-            }
-            
-            .project-cards {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .project-img {
-                max-height: 250px;
-            }
-            
-            .project-info {
-                padding: 20px;
-            }
-            
-            .project-info h3 {
-                font-size: 24px;
-            }
-            
-            .project-info p {
-                font-size: 18px;
-            }
-        }
-        
-        @media screen and (max-width: 480px) {
-            .logo {
-                font-size: 24px;
             }
             
             .hero-content h1 {
@@ -437,72 +487,133 @@
             
             .hero-content p {
                 font-size: 18px;
+                max-width: 100%;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .action-btn {
+                width: 150px;
+                text-align: center;
+                padding: 10px;
+            }
+            
+            .section {
+                padding: 60px 5%;
+                min-height: auto;
             }
             
             .section-title {
                 font-size: 30px;
+                margin-bottom: 30px;
+            }
+            
+            .about-content {
+                padding: 20px;
+                gap: 30px;
             }
             
             .about-text p, .invest p, .plan-content, .contact p {
-                font-size: 18px;
+                font-size: 16px;
+            }
+            
+            .project-cards {
+                grid-template-columns: 1fr;
+                gap: 20px;
             }
             
             .project-img {
-                max-height: 200px;
+                height: 200px;
+            }
+            
+            .project-info {
+                padding: 20px;
             }
             
             .project-info h3 {
-                font-size: 22px;
+                font-size: 20px;
             }
             
             .project-info p {
                 font-size: 16px;
             }
+            
+            .invest .container, .contact .container, .plan-content {
+                padding: 25px;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .logo img {
+                height: 25px; /* Even smaller for very small screens */
+            }
+            
+            .hero-content h1 {
+                font-size: 28px;
+            }
+            
+            .hero-content p {
+                font-size: 16px;
+            }
+            
+            .section-title {
+                font-size: 26px;
+            }
+            
+            .about-text p, .invest p, .plan-content, .contact p {
+                font-size: 16px;
+            }
+            
+            .project-img {
+                height: 180px;
+            }
+            
+            .project-info h3 {
+                font-size: 18px;
+            }
+            
+            .project-info p {
+                font-size: 14px;
+            }
         }
     </style>
-    <script>
-        // Hamburger menu toggle
-        document.addEventListener('DOMContentLoaded', () => {
-            const hamburger = document.querySelector('.hamburger');
-            const navLinks = document.querySelector('.nav-links');
-            
-            hamburger.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
-            });
-        });
-    </script>
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">I<span>RA</span></div>
+        <div class="logo">
+            <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/IRA_logo.svg" alt="IRA Logo">
+        </div>
         <div class="hamburger">☰</div>
         <div class="nav-links">
             <a href="#about">About Us</a>
             <a href="#projects">Projects</a>
             <a href="#invest">Invest</a>
-            <a href="#plans">Our Plan</a>
+            <a href="#plans">Our Vision</a>
             <a href="#contact">Contact</a>
         </div>
     </nav>
     
     <section class="hero">
         <div class="hero-content">
-            <h1>From Idea to Invention, Prototype to Product</h1>
-            <p>Welcome to Ishinders Research Lab and Automation - where innovative technology transforms into practical solutions.<br> NOTE : Our website is still in dev phase.</p>
-            <div class="buttons">
-                <a href="#contact" class="action-btn">Contact</a>
-                <a href="https://wa.me/+your-number-here" target="_blank" class="action-btn">Invest</a>
+            <h1 class="fade-in">From Idea to Invention, Prototype to Product</h1>
+            <p class="fade-in delay-1">Welcome to Ishinders Research Lab and Automation - where innovative technology transforms into practical solutions.</p>
+            <div class="buttons fade-in delay-2">
+                <a href="#contact" class="action-btn">Contact Us</a>
+                <a href="https://wa.me/+918288898544?text=Hey,%20I'm%20interested%20in%20your%20project." target="_blank" class="action-btn">Invest Now</a>
             </div>
         </div>
     </section>
     
-    <section class="section about" id="about">
-        <h2 class="section-title">About Us</h2>
-        <div class="about-content">
+    <section class="section about" id="about" style="background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://raw.githubusercontent.com/ishindersingh/snaps/main/Computer.png') center/cover no-repeat fixed;">
+        <h2 class="section-title fade-in">About Us</h2>
+        <div class="about-content fade-in delay-1">
             <div class="about-text">
-                <p>Founded by Ishinder Singh, a dedicated computer science student at Chandigarh University, IRA emerged from a vision to convert advanced research into tangible products that address real-world challenges.</p>
-                <p>At IRA, we harness the potential of deep technology to foster innovation and deliver sustainable value. Our founder’s expertise in computer science, paired with an entrepreneurial spirit, positions us as leaders in technological progress.</p>
-                <p>Our mission is clear yet bold: to bridge the gap between theoretical research and practical applications, transforming concepts into inventions and prototypes into market-ready solutions. We are dedicated to advancing automation, artificial intelligence, and sustainable technology.</p>
+                <p>Founded by Ishinder Singh, a computer science student at Chandigarh University, IRA transforms advanced research into practical solutions through cutting-edge technology.</p>
+                <p>Our mission is to bridge theoretical research and real-world applications, focusing on automation, AI, and sustainable technology innovations.</p>
             </div>
             <div class="about-image">
                 <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/astronot.png" alt="Astronaut - IRA Vision">
@@ -511,9 +622,9 @@
     </section>
     
     <section class="section projects" id="projects">
-        <h2 class="section-title">Current Projects</h2>
+        <h2 class="section-title fade-in">Current Projects</h2>
         <div class="project-cards">
-            <div class="project-card">
+            <div class="project-card fade-in">
                 <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/Ai_police.png" alt="AI Police" class="project-img">
                 <div class="project-info">
                     <h3>AI Police</h3>
@@ -525,7 +636,7 @@
                 </div>
             </div>
             
-            <div class="project-card">
+            <div class="project-card fade-in delay-1">
                 <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/peltier.png" alt="Advanced Cooling System" class="project-img">
                 <div class="project-info">
                     <h3>Advanced Cooling System</h3>
@@ -537,7 +648,7 @@
                 </div>
             </div>
             
-            <div class="project-card">
+            <div class="project-card fade-in delay-2">
                 <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/rover.png" alt="Autonomous Space Rover" class="project-img">
                 <div class="project-info">
                     <h3>Autonomous Space Rover</h3>
@@ -548,20 +659,60 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="project-card fade-in delay-1">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="SafeDine Certification" class="project-img">
+                <div class="project-info">
+                    <h3>SafeDine Certification</h3>
+                    <p>AI-powered hygiene certification system for restaurants and food businesses, utilizing existing camera infrastructure to analyze, detect, and rate establishments on a 10-star scale.</p>
+                    <p><strong>Progress:</strong> AI model developed and ready; working on business implementation and customer outreach.</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 70%"></div>
+                    </div>
+                    <a href="https://ishinders.me/safedine" target="_blank" class="website-link">Visit SafeDine →</a>
+                </div>
+            </div>
+            
+            <div class="project-card fade-in delay-2">
+                <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/AI_FIR.png" alt="AI FIR Generator" class="project-img">
+                <div class="project-info">
+                    <h3>AI FIR Generator</h3>
+                    <p>An intelligent system that converts informal incident descriptions into formal First Information Reports (FIRs) with comprehensive details, ready for printing or downloading.</p>
+                    <p><strong>Progress:</strong> Backend development completed; finalizing UI design and seeking legal consultation.</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 65%"></div>
+                    </div>
+                    <a href="https://ishinders.me/fir" target="_blank" class="website-link">Visit AI FIR →</a>
+                </div>
+            </div>
+
+            <div class="project-card fade-in delay-3">
+                <img src="https://raw.githubusercontent.com/ishindersingh/snaps/main/Computer.png" alt="Computer Automation using AI" class="project-img">
+                <div class="project-info">
+                    <h3>Computer Automation using AI</h3>
+                    <p>A unique AI-powered program that converts any given task into computer-understandable language and executes it in real-time, revolutionizing automation capabilities.</p>
+                    <p><strong>Progress:</strong> Core AI system developed; currently refining task conversion algorithms and expanding functionality.</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
     
     <section class="section invest" id="invest">
-        <h2 class="section-title">Invest With Us</h2>
-        <p>Investing in IRA today offers an opportunity akin to early investments in NVIDIA or Apple—a chance to join a pioneering venture with significant potential for long-term returns. Our innovative projects are poised to disrupt multiple industries.</p>
-        <p>Early investors will receive exclusive weekly progress reports, providing full transparency into our advancements and achievements.</p>
-        <p>The earlier you invest, the greater your potential gains as we expand our portfolio and bring groundbreaking technologies to market.</p>
-        <a href="https://wa.me/+your-number-here" target="_blank" class="action-btn">Invest</a>
+        <h2 class="section-title fade-in">Invest With Us</h2>
+        <div class="container fade-in delay-1">
+            <p>Investing in IRA today offers an opportunity akin to early investments in NVIDIA or Apple—a chance to join a pioneering venture with significant potential for long-term returns. Our innovative projects are poised to disrupt multiple industries.</p>
+            <p>Early investors will receive exclusive weekly progress reports, providing full transparency into our advancements and achievements.</p>
+            <p>The earlier you invest, the greater your potential gains as we expand our portfolio and bring groundbreaking technologies to market.</p>
+            <a href="https://wa.me/+918288898544?text=Hey,%20I'm%20interested%20in%20your%20project." target="_blank" class="action-btn">Become an Investor</a>
+        </div>
     </section>
     
     <section class="section plans" id="plans">
-        <h2 class="section-title">Our Vision</h2>
-        <div class="plan-content">
+        <h2 class="section-title fade-in">Our Vision</h2>
+        <div class="plan-content fade-in delay-1">
             <p>IRA aspires to transcend conventional research and development by establishing itself as a comprehensive knowledge hub—an online university that makes cutting-edge technical education accessible to all.</p>
             <p>Through specialized courses and programs, we aim to empower aspiring innovators worldwide, fostering a global community of forward-thinking technologists.</p>
             <p>Revenue from our educational initiatives will be reinvested into research and development, ensuring a sustainable cycle of innovation and growth for lasting impact.</p>
@@ -569,13 +720,67 @@
     </section>
     
     <section class="section contact" id="contact">
-        <h2 class="section-title">Contact Us</h2>
-        <p>Interested in partnering with us on this journey of innovation? Have questions about our projects or investment opportunities? We’d love to hear from you.</p>
-        <a href="https://wa.me/+your-number-here" target="_blank" class="action-btn">Connect</a>
+        <h2 class="section-title fade-in">Contact Us</h2>
+        <div class="container fade-in delay-1">
+            <p>Interested in partnering with us on this journey of innovation? Have questions about our projects or investment opportunities? We'd love to hear from you.</p>
+            <div class="contact-details">
+                <p><strong>Phone:</strong> +91 82 888 98 544</p>
+                <p><strong>Address:</strong> Mamupur, Near Chandigarh University</p>
+                <p><strong>Instagram:</strong> <a href="https://www.instagram.com/iishinder" target="_blank">@iishinder</a></p>
+            </div>
+            <a href="https://wa.me/+918288898544?text=Hey,%20I'm%20interested%20in%20your%20project." target="_blank" class="action-btn">Get in Touch</a>
+        </div>
     </section>
     
     <footer>
         <p>© 2025 Ishinders Research Lab and Automation (IRA). All Rights Reserved.</p>
     </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+            
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -100px 0px"
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                        
+                        navLinks.classList.remove('active');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
