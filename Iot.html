@@ -1,156 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESP32 DHT11 Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ishinder's ESP Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
+      font-family: 'Inter', sans-serif;
+      background-color: #0f0f0f;
+      color: #f1f1f1;
       text-align: center;
+      padding: 40px 20px;
     }
-    #variableForm {
-      margin-bottom: 20px;
+
+    h1 {
+      font-size: 2rem;
+      color: #00ffe0;
+      margin-bottom: 30px;
     }
-    #variables {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 20px;
+
+    #readings {
+      font-size: 1.2rem;
+      background-color: #1a1a1a;
+      padding: 20px;
+      border-radius: 16px;
+      margin: 0 auto 30px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 15px rgba(0, 255, 224, 0.1);
+      line-height: 1.8;
     }
-    .variable {
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 5px;
-      min-width: 150px;
+
+    #readings span {
+      font-weight: 600;
+      color: #00ffe0;
     }
+
     #chartContainer {
-      max-width: 600px;
+      max-width: 700px;
       margin: 0 auto;
+      background-color: #1a1a1a;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0, 255, 224, 0.05);
     }
-    input, button {
-      padding: 5px;
-      margin: 5px;
+
+    canvas {
+      background-color: #121212;
+      border-radius: 12px;
     }
   </style>
 </head>
 <body>
-  <h1>ESP32 DHT11 Dashboard</h1>
-  <div id="variableForm">
-    <input type="text" id="variableName" placeholder="Variable Name (e.g., Temperature)">
-    <input type="text" id="topicName" placeholder="MQTT Topic (e.g., esp32/temperature)">
-    <button onclick="addVariable()">Add Variable</button>
+  <h1>ESP32 DHT11 Sensor Readings</h1>
+  <div id="readings">
+    Temperature: <span id="temperature">--</span> °C<br/>
+    Humidity: <span id="humidity">--</span> %
   </div>
-  <div id="variables"></div>
   <div id="chartContainer">
     <canvas id="sensorChart"></canvas>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // WebSocket connection to Node.js server
     const ws = new WebSocket('wss://todolist-sever.onrender.com');
 
-    ws.onopen = () => {
-      console.log('Connected to WebSocket server');
-    };
+    ws.onopen = () => console.log('Connected to WebSocket server');
 
     ws.onmessage = (event) => {
       try {
-        const { topic, value } = JSON.parse(event.data);
-        console.log(`Received ${value} for ${topic}`);
+        const data = JSON.parse(event.data);
+        document.getElementById('temperature').textContent = data.temperature.toFixed(1);
+        document.getElementById('humidity').textContent = data.humidity.toFixed(1);
 
-        // Update variable display
-        const variableDiv = document.querySelector(`[data-topic="${topic}"]`);
-        if (variableDiv) {
-          variableDiv.querySelector('.value').textContent = parseFloat(value).toFixed(2);
+        const now = new Date().toLocaleTimeString();
+        sensorChart.data.labels.push(now);
+        sensorChart.data.datasets[0].data.push(data.temperature);
+        sensorChart.data.datasets[1].data.push(data.humidity);
+
+        if (sensorChart.data.labels.length > 20) {
+          sensorChart.data.labels.shift();
+          sensorChart.data.datasets[0].data.shift();
+          sensorChart.data.datasets[1].data.shift();
         }
 
-        // Update chart
-        const dataset = sensorChart.data.datasets.find(ds => ds.label === topic);
-        if (dataset) {
-          const now = new Date().toLocaleTimeString();
-          sensorChart.data.labels.push(now);
-          dataset.data.push(parseFloat(value));
-
-          // Limit to 20 data points
-          if (sensorChart.data.labels.length > 20) {
-            sensorChart.data.labels.shift();
-            sensorChart.data.datasets.forEach(ds => ds.data.shift());
-          }
-
-          sensorChart.update();
-        }
+        sensorChart.update();
       } catch (e) {
         console.error('Error parsing data:', e);
       }
     };
 
-    ws.onclose = () => {
-      console.log('Disconnected from WebSocket server');
-    };
+    ws.onclose = () => console.log('Disconnected from WebSocket server');
 
-    // Initialize Chart.js
     const ctx = document.getElementById('sensorChart').getContext('2d');
     const sensorChart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: [],
-        datasets: []
+        datasets: [
+          {
+            label: 'Temperature (°C)',
+            data: [],
+            borderColor: '#ff5f5f',
+            backgroundColor: 'rgba(255, 95, 95, 0.2)',
+            tension: 0.3,
+            fill: true
+          },
+          {
+            label: 'Humidity (%)',
+            data: [],
+            borderColor: '#00ffe0',
+            backgroundColor: 'rgba(0, 255, 224, 0.2)',
+            tension: 0.3,
+            fill: true
+          }
+        ]
       },
       options: {
         responsive: true,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#f1f1f1'
+            }
+          }
+        },
         scales: {
-          x: { title: { display: true, text: 'Time' } },
-          y: { title: { display: true, text: 'Value' } }
+          x: {
+            ticks: { color: '#ccc' },
+            title: { display: true, text: 'Time', color: '#ccc' }
+          },
+          y: {
+            ticks: { color: '#ccc' },
+            title: { display: true, text: 'Value', color: '#ccc' }
+          }
         }
       }
     });
-
-    // Add variable to dashboard
-    function addVariable() {
-      const name = document.getElementById('variableName').value.trim();
-      const topic = document.getElementById('topicName').value.trim();
-      if (!name || !topic) {
-        alert('Please enter both name and topic');
-        return;
-      }
-
-      // Add to variables display
-      const variableDiv = document.createElement('div');
-      variableDiv.className = 'variable';
-      variableDiv.dataset.topic = topic;
-      variableDiv.innerHTML = `
-        <strong>${name}</strong><br>
-        Value: <span class="value">--</span>
-      `;
-      document.getElementById('variables').appendChild(variableDiv);
-
-      // Add to chart
-      sensorChart.data.datasets.push({
-        label: topic,
-        data: [],
-        borderColor: getRandomColor(),
-        fill: false
-      });
-      sensorChart.update();
-
-      // Clear inputs
-      document.getElementById('variableName').value = '';
-      document.getElementById('topicName').value = '';
-    }
-
-    // Generate random color for chart lines
-    function getRandomColor() {
-      const letters = '0123456789ABCDEF';
-      let color = '#';
-      for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-      }
-      return color;
-    }
   </script>
 </body>
 </html>
