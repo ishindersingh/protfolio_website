@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32-CAM Live Stream</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      color: #333;
+    }
+    #videoFeed {
+      max-width: 100%;
+      border: 2px solid #333;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>ESP32-CAM Live Stream</h1>
+  <img id="videoFeed" src="" alt="Live Stream">
+  <div id="status">Connecting...</div>
+
+  <script>
+    const ws = new WebSocket('wss://todolist-sever.onrender.com/cam');
+    const videoFeed = document.getElementById('videoFeed');
+    const status = document.getElementById('status');
+
+    ws.onopen = () => {
+      console.log('Connected to WebSocket server');
+      status.textContent = 'Connected';
+    };
+
+    ws.onmessage = (event) => {
+      // Expect binary data (JPEG frame)
+      const reader = new FileReader();
+      reader.onload = () => {
+        videoFeed.src = reader.result; // Set image src to base64 data
+      };
+      reader.readAsDataURL(new Blob([event.data], { type: 'image/jpeg' }));
+      console.log('Received frame');
+    };
+
+    ws.onclose = () => {
+      console.log('Disconnected from WebSocket server');
+      status.textContent = 'Disconnected';
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+      status.textContent = 'Error';
+    };
+  </script>
+</body>
+</html>
