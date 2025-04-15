@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32 LED Control</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>ESP32 LED Control</h1>
+  <button onclick="sendCommand('ON')">Turn LED ON</button>
+  <button onclick="sendCommand('OFF')">Turn LED OFF</button>
+
+  <script>
+    const ws = new WebSocket('wss://' + window.location.host);
+
+    ws.onopen = () => {
+      console.log('Connected to WebSocket server');
+    };
+
+    ws.onmessage = (event) => {
+      console.log('Received:', event.data);
+    };
+
+    ws.onclose = () => {
+      console.log('Disconnected from WebSocket server');
+    };
+
+    function sendCommand(command) {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(command);
+        console.log('Sent:', command);
+      } else {
+        console.log('WebSocket is not connected');
+      }
+    }
+  </script>
+</body>
+</html>
