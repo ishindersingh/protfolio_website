@@ -3,63 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESP32-CAM Live Stream</title>
+  <title>ESP32-CAM Stream</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 20px;
-      background-color: #f0f0f0;
-    }
-    h1 {
-      color: #333;
-    }
-    #videoFeed {
-      max-width: 100%;
-      border: 2px solid #333;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-    #status {
-      margin-top: 10px;
-      font-weight: bold;
-      color: #555;
-    }
+    body { font-family: Arial; text-align: center; margin: 20px; }
+    img { max-width: 100%; border: 1px solid #333; }
+    #status { margin-top: 10px; color: #333; }
+    #error { color: red; display: none; }
   </style>
 </head>
 <body>
-  <h1>ESP32-CAM Live Stream</h1>
-  <img id="videoFeed" src="" alt="Live Stream">
+  <h1>ESP32-CAM Stream</h1>
+  <img id="stream" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Stream">
   <div id="status">Connecting...</div>
+  <div id="error"></div>
 
   <script>
     const ws = new WebSocket('wss://todolist-sever.onrender.com/cam');
-    const videoFeed = document.getElementById('videoFeed');
+    const stream = document.getElementById('stream');
     const status = document.getElementById('status');
+    const errorDiv = document.getElementById('error');
+    let lastUpdate = 0;
 
     ws.onopen = () => {
-      console.log('Connected to WebSocket server');
+      console.log('WebSocket opened');
       status.textContent = 'Connected';
+      errorDiv.style.display = 'none';
     };
 
     ws.onmessage = (event) => {
-      // Expect binary data (JPEG frame)
+      console.log('Received data:', event.data);
+      if (!(event.data instanceof Blob)) {
+        console.error('Non-binary data received');
+        errorDiv.textContent = 'Error: Expected binary data';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      // Throttle updates to 5fps max
+      const now = Date.now();
+      if (now - lastUpdate < 200) return;
+      lastUpdate = now;
+
       const reader = new FileReader();
       reader.onload = () => {
-        videoFeed.src = reader.result; // Set image src to base64 data
+        try {
+          stream.src = reader.result;
+          console.log('Frame updated');
+          errorDiv.style.display = 'none';
+        } catch (err) {
+          console.error('Image render error:', err);
+          errorDiv.textContent = 'Error rendering frame';
+          errorDiv.style.display = 'block';
+        }
       };
-      reader.readAsDataURL(new Blob([event.data], { type: 'image/jpeg' }));
-      console.log('Received frame');
+      reader.onerror = () => {
+        console.error('FileReader error');
+        errorDiv.textContent = 'Error reading frame';
+        errorDiv.style.display = 'block';
+      };
+      reader.readAsDataURL(event.data);
     };
 
     ws.onclose = () => {
-      console.log('Disconnected from WebSocket server');
+      console.log('WebSocket closed');
       status.textContent = 'Disconnected';
+      errorDiv.textContent = 'WebSocket disconnected';
+      errorDiv.style.display = 'block';
     };
 
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-      status.textContent = 'Error';
+    ws.onerror = (err) => {
+      console.error('WebSocket error:', err);
+      errorDiv.textContent = 'WebSocket error';
+      errorDiv.style.display = 'block';
     };
   </script>
 </body>
