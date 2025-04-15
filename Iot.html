@@ -24,7 +24,8 @@
   <button onclick="sendCommand('OFF')">Turn LED OFF</button>
 
   <script>
-    const ws = new WebSocket('wss://' + window.location.host);
+    // Connect to Node.js server WebSocket
+    const ws = new WebSocket('wss://todolist-sever.onrender.com');
 
     ws.onopen = () => {
       console.log('Connected to WebSocket server');
