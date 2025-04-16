@@ -1,127 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Servo Control Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      background: linear-gradient(to bottom, #0A0A23, #1E1E3F);
-      font-family: 'Orbitron', sans-serif;
-    }
-    .glow {
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-    }
-    .btn:hover {
-      transform: scale(1.05);
-      transition: transform 0.2s;
-    }
-    #videoCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-  </style>
+    <title>Servo Control</title>
 </head>
-<body class="min-h-screen text-white flex items-center justify-center">
-  <div class="w-full max-w-4xl p-6 space-y-6">
-    <h1 class="text-4xl font-bold text-center text-cyan-400">Servo Control Dashboard</h1>
-    
-    <!-- Video Stream with Overlay -->
-    <div class="relative bg-gray-800 rounded-lg overflow-hidden glow">
-      <img id="videoStream" src="" alt="Video Stream" class="w-full h-auto">
-      <canvas id="videoCanvas" class="absolute top-0 left-0"></canvas>
-    </div>
-    
-    <!-- Distance Display -->
-    <div class="text-center">
-      <p id="distanceDisplay" class="text-2xl font-semibold text-cyan-400">Distance: Initializing...</p>
-    </div>
-    
-    <!-- Servo Control -->
-    <div class="bg-gray-800 p-6 rounded-lg glow space-y-4">
-      <div class="flex justify-center space-x-4">
-        <button onclick="moveToAngle(0)" class="btn bg-gray-700 text-cyan-400 px-4 py-2 rounded-lg glow">0°</button>
-        <button onclick="moveToAngle(45)" class="btn bg-gray-700 text-cyan-400 px-4 py-2 rounded-lg glow">45°</button>
-        <button onclick="moveToAngle(90)" class="btn bg-gray-700 text-cyan-400 px-4 py-2 rounded-lg glow">90°</button>
-        <button onclick="moveToAngle(125)" class="btn bg-gray-700 text-cyan-400 px-4 py-2 rounded-lg glow">125°</button>
-        <button onclick="moveToAngle(180)" class="btn bg-gray-700 text-cyan-400 px-4 py-2 rounded-lg glow">180°</button>
-      </div>
-    </div>
-  </div>
+<body>
+    <h1>Servo Control</h1>
+    <button onclick="sendAngle(0)">0°</button>
+    <button onclick="sendAngle(45)">45°</button>
+    <button onclick="sendAngle(90)">90°</button>
+    <button onclick="sendAngle(135)">135°</button>
+    <button onclick="sendAngle(180)">180°</button>
+    <p>Distance: <span id="distance">Waiting...</span> cm</p>
 
-  <script>
-    const ws = new WebSocket('ws://' + window.location.host);
-    const videoStream = document.getElementById('videoStream');
-    const videoCanvas = document.getElementById('videoCanvas');
-    const ctx = videoCanvas.getContext('2d');
-    const distanceDisplay = document.getElementById('distanceDisplay');
+    <script>
+        const ws = new WebSocket('wss://esp-cam-server.onrender.com');
+        
+        ws.onopen = () => {
+            console.log('WebSocket connected');
+        };
 
-    let distance = 0;
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === 'distance') {
+                document.getElementById('distance').textContent = data.distance.toFixed(2);
+            }
+        };
 
-    // WebSocket handling
-    ws.onopen = () => {
-      ws.send(JSON.stringify({ type: 'web' }));
-      console.log('Connected to server');
-    };
+        ws.onclose = () => {
+            console.log('WebSocket closed');
+        };
 
-    ws.onmessage = (event) => {
-      if (event.data instanceof Blob) {
-        // Handle video frame
-        const url = URL.createObjectURL(event.data);
-        videoStream.src = url;
-        videoStream.onload = () => URL.revokeObjectURL(url);
-
-        // Update canvas size
-        videoCanvas.width = videoStream.width;
-        videoCanvas.height = videoStream.height;
-
-        // Draw depth line
-        drawDepthLine();
-      } else {
-        // Handle JSON data
-        const data = JSON.parse(event.data);
-        if (data.type === 'distance') {
-          distance = data.distance;
-          distanceDisplay.textContent = `Distance: ${distance.toFixed(1)} cm`;
-          drawDepthLine();
+        function sendAngle(angle) {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'servo', angle: angle }));
+                console.log(`Sent angle: ${angle}`);
+            } else {
+                console.log('WebSocket not connected');
+            }
         }
-      }
-    };
-
-    ws.onclose = () => {
-      console.log('Disconnected from server');
-      setTimeout(() => {
-        location.reload(); // Reconnect by reloading
-      }, 5000);
-    };
-
-    // Draw depth line for 3D effect
-    function drawDepthLine() {
-      ctx.clearRect(0, 0, videoCanvas.width, videoCanvas.height);
-      if (distance > 0) {
-        // Map distance to line position (closer = lower, farther = higher)
-        const maxDistance = 200; // Max distance in cm
-        const yPos = videoCanvas.height * (1 - Math.min(distance, maxDistance) / maxDistance);
-        ctx.beginPath();
-        ctx.moveTo(0, yPos);
-        ctx.lineTo(videoCanvas.width, yPos);
-        ctx.strokeStyle = 'cyan';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // Add distance label on line
-        ctx.font = '16px Orbitron';
-        ctx.fillStyle = 'cyan';
-        ctx.fillText(`${distance.toFixed(1)} cm`, 10, yPos - 10);
-      }
-    }
-
-    // Servo control
-    function moveToAngle(angle) {
-      ws.send(JSON.stringify({ type: 'servo', angle }));
-    }
-  </script>
+    </script>
 </body>
 </html>
