@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32-CAM Control Center</title>
+    <title>IRA Control Center</title>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --accent-color: #3498db;
-            --hover-color: #2980b9;
-            --success-color: #2ecc71;
-            --error-color: #e74c3c;
-            --background-color: #f5f5f7;
-            --panel-bg: #ffffff;
-            --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --primary-purple: #4B0082;
+            --accent-teal: #008080;
+            --text-white: #FFFFFF;
+            --panel-bg: rgba(255, 255, 255, 0.1);
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            --hover-teal: #00A0A0;
         }
 
         * {
@@ -23,16 +21,20 @@
         }
 
         body {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--background-color);
-            color: #333;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at center, #2C003E 0%, #000000 100%);
+            color: var(--text-white);
             line-height: 1.5;
             overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .container {
-            max-width: 100%;
-            height: 100vh;
+            max-width: 360px;
+            height: 100%;
             padding: 8px;
             display: flex;
             flex-direction: column;
@@ -40,8 +42,7 @@
         }
 
         header {
-            background-color: var(--primary-color);
-            color: white;
+            background: var(--primary-purple);
             padding: 8px;
             border-radius: 8px;
             text-align: center;
@@ -50,7 +51,6 @@
         header h1 {
             font-size: 1.2rem;
             font-weight: 600;
-            margin: 0;
         }
 
         .connection-status {
@@ -63,23 +63,19 @@
         }
 
         .connected {
-            background-color: var(--success-color);
-            color: white;
+            background: #2ECC71;
         }
 
         .disconnected {
-            background-color: var(--error-color);
-            color: white;
+            background: #E74C3C;
         }
 
         .video-container {
             width: 100%;
-            max-width: 360px;
             aspect-ratio: 400 / 296;
-            margin: 0 auto;
             border-radius: 8px;
             overflow: hidden;
-            background-color: #000;
+            background: #000;
             box-shadow: var(--shadow);
             position: relative;
         }
@@ -89,9 +85,8 @@
             height: 100%;
             object-fit: contain;
             display: block;
-            -webkit-user-select: none;
             margin: auto;
-            background-color: hsl(0, 0%, 25%);
+            background: hsl(0, 0%, 25%);
         }
 
         .video-overlay {
@@ -103,14 +98,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
+            background: rgba(0, 0, 0, 0.7);
             z-index: 10;
             font-size: 0.85rem;
         }
 
         .controls {
-            background-color: var(--panel-bg);
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
             padding: 8px;
             border-radius: 8px;
             box-shadow: var(--shadow);
@@ -130,28 +125,50 @@
         .angle-btn {
             flex: 1;
             padding: 8px;
-            background-color: var(--accent-color);
-            color: white;
+            background: var(--accent-teal);
+            color: var(--text-white);
             border: none;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.2s;
-            touch-action: manipulation;
+            transition: background 0.3s, transform 0.1s;
         }
 
         .angle-btn:hover {
-            background-color: var(--hover-color);
+            background: var(--hover-teal);
+            transform: translateY(-2px);
         }
 
-        .angle-btn:focus {
-            outline: 2px solid var(--hover-color);
-            outline-offset: 2px;
+        .angle-btn:active {
+            transform: translateY(0);
+        }
+
+        .graph-container {
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            height: 150px;
+            position: relative;
+        }
+
+        .graph-container h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        #three-canvas {
+            width: 100%;
+            height: 100px;
+            display: block;
         }
 
         .info-panel {
-            background-color: var(--panel-bg);
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
             padding: 8px;
             border-radius: 8px;
             box-shadow: var(--shadow);
@@ -170,16 +187,18 @@
 
         .data-value {
             font-weight: 600;
-            color: var(--error-color);
+            color: var(--accent-teal);
         }
 
         .stream-url-input {
             width: 100%;
             padding: 8px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--text-white);
             border-radius: 4px;
             font-size: 0.85rem;
             margin-bottom: 6px;
+            background: transparent;
+            color: var(--text-white);
         }
 
         .buttons-row {
@@ -190,29 +209,23 @@
         .action-btn {
             flex: 1;
             padding: 8px;
-            background-color: #95a5a6;
-            color: white;
+            background: #666;
+            color: var(--text-white);
             border: none;
             border-radius: 4px;
             font-size: 0.85rem;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: background 0.2s;
         }
 
         .action-btn:hover {
-            background-color: #7f8c8d;
-        }
-
-        .action-btn:focus {
-            outline: 2px solid #7f8c8d;
-            outline-offset: 2px;
+            background: #888;
         }
 
         @media (min-width: 600px) {
             .container {
                 max-width: 400px;
-                margin: 0 auto;
                 padding: 12px;
             }
 
@@ -224,11 +237,8 @@
                 font-size: 0.85rem;
             }
 
-            .video-container {
-                max-width: 400px;
-            }
-
             .controls h2,
+            .graph-container h2,
             .info-panel h2 {
                 font-size: 1.1rem;
             }
@@ -247,7 +257,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>ESP32-CAM Control Center</h1>
+            <h1>IRA Control Center</h1>
             <div id="connection-status" class="connection-status disconnected">Disconnected</div>
         </header>
 
@@ -258,7 +268,7 @@
                     <h3>Video Stream</h3>
                     <p id="stream-status">Enter ESP32-CAM stream URL and connect</p>
                     <input type="text" id="stream-url" class="stream-url-input" 
-                           placeholder="ESP32-CAM Stream URL (e.g., http://<ESP32-IP>:81/stream)">
+                           placeholder="http://<ESP32-IP>:81/stream">
                     <div class="buttons-row">
                         <button class="action-btn" onclick="connectStream()">Connect</button>
                         <button class="action-btn" onclick="toggleStream()">Show/Hide</button>
@@ -278,15 +288,21 @@
             </div>
         </section>
 
+        <section class="graph-container">
+            <h2>Distance Graph</h2>
+            <canvas id="three-canvas"></canvas>
+        </section>
+
         <section class="info-panel">
             <h2>Sensor Data</h2>
             <p>Distance: <span id="distance" class="data-value">Waiting...</span> cm</p>
             <p>Servo Angle: <span id="servo-angle" class="data-value">90</span>°</p>
-            <p>Last Command: <span id="last-command" class="data-value">None</p>
+            <p>Last Command: <span id="last-command" class="data-value">None</span></p>
             <p>WebSocket Status: <span id="ws-status" class="data-value">Connecting...</span></p>
         </section>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script>
         const wsUrl = 'ws://localhost:8765';
         let ws;
@@ -294,6 +310,49 @@
         const maxReconnectAttempts = 10;
         let currentAngle = 90;
         let streamConnected = true;
+
+        // Three.js setup
+        const canvas = document.getElementById('three-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / 100, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        renderer.setSize(canvas.clientWidth, 100);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xFFFFFF, 0.5);
+        pointLight.position.set(10, 10, 10);
+        scene.add(pointLight);
+
+        // Grid
+        const gridHelper = new THREE.GridHelper(10, 10, 0x444444, 0x444444);
+        scene.add(gridHelper);
+
+        // Bar for distance
+        const barGeometry = new THREE.BoxGeometry(1, 1, 1);
+        const barMaterial = new THREE.MeshPhongMaterial({ color: 0x008080 });
+        let bar = new THREE.Mesh(barGeometry, barMaterial);
+        scene.add(bar);
+
+        camera.position.set(5, 5, 10);
+        camera.lookAt(0, 0, 0);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            bar.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        function updateGraph(distance) {
+            scene.remove(bar);
+            const height = Math.min(distance / 10, 10); // Scale distance (max 100 cm = 10 units)
+            const newGeometry = new THREE.BoxGeometry(1, height, 1);
+            bar = new THREE.Mesh(newGeometry, barMaterial);
+            bar.position.y = height / 2; // Center vertically
+            scene.add(bar);
+        }
 
         function connectWebSocket() {
             ws = new WebSocket(wsUrl);
@@ -311,8 +370,9 @@
                     console.log('Received:', data);
 
                     if (data.type === 'distance') {
-                        document.getElementById('distance').textContent = 
-                            parseFloat(data.distance).toFixed(1);
+                        const distance = parseFloat(data.distance).toFixed(1);
+                        document.getElementById('distance').textContent = distance;
+                        updateGraph(parseFloat(data.distance));
                     } else if (data.type === 'servo') {
                         currentAngle = data.angle;
                         document.getElementById('servo-angle').textContent = data.angle;
@@ -391,7 +451,7 @@
             };
 
             videoFeed.onerror = () => {
-                streamStatus.textContent = 'Failed to connect to stream. Check URL or network.';
+                streamStatus.textContent = 'Failed to connect to stream';
                 videoFeed.style.display = 'none';
                 document.getElementById('video-message').style.display = 'flex';
                 streamConnected = false;
