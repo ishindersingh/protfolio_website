@@ -33,24 +33,45 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
             background-color: #000;
+            min-height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .video-feed {
             width: 100%;
             display: block;
         }
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            z-index: 10;
+        }
         .controls {
             display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 10px;
+            flex-direction: column;
+            gap: 15px;
             margin-bottom: 20px;
             padding: 15px;
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        .angle-btns {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
         .angle-btn {
-            padding: 12px 20px;
+            padding: 12px 0;
             background-color: #3498db;
             color: white;
             border: none;
@@ -58,7 +79,8 @@
             cursor: pointer;
             font-size: 16px;
             transition: background-color 0.3s;
-            min-width: 60px;
+            flex: 1;
+            margin: 0 5px;
         }
         .angle-btn:hover {
             background-color: #2980b9;
@@ -103,23 +125,40 @@
             color: #3498db;
             margin: 10px 0;
         }
+        .buttons-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .action-btn {
+            padding: 10px 15px;
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1;
+        }
+        .action-btn:hover {
+            background-color: #7f8c8d;
+        }
+        .stream-url-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
         
         /* Mobile responsive styles */
         @media (max-width: 600px) {
             .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-            .angle-btns {
-                display: flex;
-                justify-content: space-between;
-                width: 100%;
-                margin-bottom: 15px;
+                padding: 10px;
             }
             .angle-btn {
-                padding: 10px 15px;
+                padding: 10px 0;
                 font-size: 14px;
-                min-width: 50px;
             }
             header h1 {
                 font-size: 24px;
@@ -135,10 +174,26 @@
         </header>
 
         <div class="video-container">
-            <img id="video-feed" class="video-feed" src="http://192.168.0.121:81/stream" alt="ESP32-CAM Stream" onerror="handleVideoError()">
+            <img id="video-feed" class="video-feed" alt="ESP32-CAM Stream" style="display: none;">
+            <div id="video-message" class="video-overlay">
+                <div>
+                    <h3>Video Stream</h3>
+                    <p id="stream-status">Connecting to ESP32-CAM...</p>
+                    <div>
+                        <input type="text" id="stream-url" class="stream-url-input" 
+                               value="http://192.168.0.121:81/stream" 
+                               placeholder="ESP32-CAM Stream URL">
+                        <div class="buttons-row">
+                            <button class="action-btn" onclick="connectStream()">Connect</button>
+                            <button class="action-btn" onclick="toggleStream()">Show/Hide</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="controls">
+            <h3>Servo Control</h3>
             <div class="angle-btns">
                 <button class="angle-btn" onclick="sendAngle(0)">0°</button>
                 <button class="angle-btn" onclick="sendAngle(45)">45°</button>
@@ -150,6 +205,7 @@
             <div class="slider-container">
                 <input type="range" min="0" max="180" value="90" class="slider" id="angle-slider">
                 <div class="angle-display">Current angle: <span id="current-angle">90</span>°</div>
+                <button class="action-btn" onclick="sendCurrentSliderAngle()">Set Angle</button>
             </div>
         </div>
 
@@ -157,7 +213,7 @@
             <h3>Sensor Data</h3>
             <p>Distance: <span id="distance" class="data-value">Waiting...</span> cm</p>
             <p>Last command: <span id="last-command" class="data-value">None</span></p>
-            <p>Stream status: <span id="stream-status" class="data-value">Connecting...</span></p>
+            <p>WebSocket status: <span id="ws-status" class="data-value">Connecting...</span></p>
         </div>
     </div>
 
@@ -165,8 +221,10 @@
         // WebSocket connection
         let ws;
         let reconnectAttempts = 0;
-        const maxReconnectAttempts = 5;
+        let reconnectInterval;
+        const maxReconnectAttempts = 10;
         let currentAngle = 90;
+        let streamConnected = false;
         
         function connectWebSocket() {
             ws = new WebSocket('wss://esp-cam-server.onrender.com');
@@ -175,16 +233,23 @@
                 console.log('WebSocket connected');
                 document.getElementById('connection-status').textContent = 'Connected';
                 document.getElementById('connection-status').className = 'connection-status connected';
+                document.getElementById('ws-status').textContent = 'Connected';
                 reconnectAttempts = 0;
+                clearInterval(reconnectInterval);
             };
             
             ws.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
+                    console.log('Received message:', data);
+                    
                     if (data.type === 'distance') {
-                        document.getElementById('distance').textContent = data.distance.toFixed(2);
+                        // Format distance to 1 decimal place
+                        const formattedDistance = parseFloat(data.distance).toFixed(1);
+                        document.getElementById('distance').textContent = formattedDistance;
                     } else if (data.type === 'servo') {
                         updateAngleUI(data.angle);
+                        document.getElementById('last-command').textContent = `Servo to ${data.angle}°`;
                     }
                 } catch (e) {
                     console.error('Error parsing message:', e);
@@ -195,19 +260,28 @@
                 console.log('WebSocket closed');
                 document.getElementById('connection-status').textContent = 'Disconnected';
                 document.getElementById('connection-status').className = 'connection-status disconnected';
+                document.getElementById('ws-status').textContent = 'Disconnected';
                 
                 // Attempt to reconnect
                 if (reconnectAttempts < maxReconnectAttempts) {
-                    setTimeout(() => {
+                    const delay = Math.min(1000 * Math.pow(1.5, reconnectAttempts), 10000);
+                    console.log(`Reconnecting in ${delay/1000} seconds...`);
+                    document.getElementById('ws-status').textContent = `Reconnecting in ${delay/1000}s...`;
+                    
+                    clearInterval(reconnectInterval);
+                    reconnectInterval = setTimeout(() => {
                         reconnectAttempts++;
-                        console.log(`Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts})...`);
+                        console.log(`Reconnect attempt ${reconnectAttempts}/${maxReconnectAttempts}`);
                         connectWebSocket();
-                    }, 3000 * reconnectAttempts); // Increase delay with each attempt
+                    }, delay);
+                } else {
+                    document.getElementById('ws-status').textContent = 'Failed to connect';
                 }
             };
             
             ws.onerror = (error) => {
                 console.error('WebSocket error:', error);
+                document.getElementById('ws-status').textContent = 'Error';
             };
         }
         
@@ -223,26 +297,58 @@
             }
         }
         
+        function sendCurrentSliderAngle() {
+            const angle = parseInt(document.getElementById('angle-slider').value);
+            sendAngle(angle);
+        }
+        
         function updateAngleUI(angle) {
             currentAngle = angle;
             document.getElementById('current-angle').textContent = angle;
             document.getElementById('angle-slider').value = angle;
         }
         
-        function handleVideoError() {
-            document.getElementById('stream-status').textContent = 'Failed to connect';
-            // Try reloading the stream after a delay
-            setTimeout(() => {
-                const videoFeed = document.getElementById('video-feed');
-                videoFeed.src = `http://192.168.0.121:81/stream?t=${new Date().getTime()}`;
-                document.getElementById('stream-status').textContent = 'Reconnecting...';
-            }, 5000);
+        function connectStream() {
+            const videoFeed = document.getElementById('video-feed');
+            const streamUrl = document.getElementById('stream-url').value.trim();
+            const streamStatus = document.getElementById('stream-status');
+            
+            if (!streamUrl) {
+                streamStatus.textContent = 'Please enter a stream URL';
+                return;
+            }
+            
+            streamStatus.textContent = 'Connecting...';
+            videoFeed.style.display = 'none';
+            
+            // Add timestamp to prevent caching
+            videoFeed.src = `${streamUrl}?t=${new Date().getTime()}`;
+            
+            videoFeed.onload = function() {
+                streamStatus.textContent = 'Connected';
+                videoFeed.style.display = 'block';
+                document.getElementById('video-message').style.display = 'none';
+                streamConnected = true;
+            };
+            
+            videoFeed.onerror = function() {
+                streamStatus.textContent = 'Failed to connect to stream';
+                videoFeed.style.display = 'none';
+                document.getElementById('video-message').style.display = 'flex';
+                streamConnected = false;
+            };
         }
         
-        function checkVideoStatus() {
+        function toggleStream() {
             const videoFeed = document.getElementById('video-feed');
-            if (videoFeed.complete && videoFeed.naturalHeight !== 0) {
-                document.getElementById('stream-status').textContent = 'Connected';
+            const videoMessage = document.getElementById('video-message');
+            
+            if (videoFeed.style.display === 'none') {
+                videoFeed.style.display = 'block';
+                videoMessage.style.display = 'none';
+            } else {
+                videoFeed.style.display = 'none';
+                videoMessage.style.display = 'flex';
             }
         }
         
@@ -256,18 +362,8 @@
                 document.getElementById('current-angle').textContent = this.value;
             });
             
-            slider.addEventListener('change', function() {
-                sendAngle(parseInt(this.value));
-            });
-            
-            // Check video status
-            const videoFeed = document.getElementById('video-feed');
-            videoFeed.onload = function() {
-                document.getElementById('stream-status').textContent = 'Connected';
-            };
-            
-            // Periodically check connection
-            setInterval(checkVideoStatus, 5000);
+            // Try to connect to the stream after a short delay
+            setTimeout(connectStream, 1000);
         };
     </script>
 </body>
