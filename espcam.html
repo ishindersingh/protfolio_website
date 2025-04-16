@@ -7,13 +7,12 @@
     <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #1A202C;
-            --bg-accent: #2D3748;
-            --accent-cyan: #00B7EB;
-            --text-white: #F7FAFC;
-            --panel-bg: rgba(255, 255, 255, 0.05);
-            --shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            --hover-cyan: #00D4FF;
+            --bg-white: #F7FAFC;
+            --panel-gray: #EDF2F7;
+            --text-dark: #2D3748;
+            --accent-blue: #3182CE;
+            --border-gray: #E2E8F0;
+            --hover-blue: #2B6CB0;
         }
 
         * {
@@ -24,8 +23,8 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-accent) 100%);
-            color: var(--text-white);
+            background: var(--bg-white);
+            color: var(--text-dark);
             line-height: 1.5;
             overflow: hidden;
             height: 100vh;
@@ -44,11 +43,11 @@
         }
 
         header {
-            background: var(--panel-bg);
+            background: var(--panel-gray);
             padding: 8px;
-            border-radius: 8px;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
             text-align: center;
-            backdrop-filter: blur(8px);
         }
 
         header h1 {
@@ -66,21 +65,22 @@
         }
 
         .connected {
-            background: #2ECC71;
+            background: #48BB78;
+            color: #FFFFFF;
         }
 
         .disconnected {
-            background: #E74C3C;
+            background: #F56565;
+            color: #FFFFFF;
         }
 
         .video-container {
             width: 100%;
             aspect-ratio: 400 / 296;
-            border-radius: 8px;
+            border-radius: 6px;
             overflow: hidden;
             background: #000;
-            box-shadow: var(--shadow);
-            position: relative;
+            border: 1px solid var(--border-gray);
         }
 
         .video-feed {
@@ -104,14 +104,14 @@
             background: rgba(0, 0, 0, 0.7);
             z-index: 10;
             font-size: 0.85rem;
+            color: #FFFFFF;
         }
 
         .controls {
-            background: var(--panel-bg);
-            backdrop-filter: blur(8px);
+            background: var(--panel-gray);
             padding: 8px;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
         }
 
         .controls h2 {
@@ -128,32 +128,26 @@
         .angle-btn {
             flex: 1;
             padding: 8px;
-            background: var(--accent-cyan);
-            color: var(--text-white);
+            background: var(--accent-blue);
+            color: #FFFFFF;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 0.85rem;
             font-weight: 500;
             cursor: pointer;
-            transition: background 0.3s, transform 0.1s;
+            transition: background 0.2s;
         }
 
         .angle-btn:hover {
-            background: var(--hover-cyan);
-            transform: translateY(-1px);
-        }
-
-        .angle-btn:active {
-            transform: translateY(0);
+            background: var(--hover-blue);
         }
 
         .graph-container {
-            background: var(--panel-bg);
-            backdrop-filter: blur(8px);
+            background: var(--panel-gray);
             padding: 8px;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            height: 140px;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            height: 160px;
         }
 
         .graph-container h2 {
@@ -164,16 +158,15 @@
 
         #three-canvas {
             width: 100%;
-            height: 100px;
+            height: 120px;
             display: block;
         }
 
         .info-panel {
-            background: var(--panel-bg);
-            backdrop-filter: blur(8px);
+            background: var(--panel-gray);
             padding: 8px;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
             font-size: 0.8rem;
         }
 
@@ -189,18 +182,18 @@
 
         .data-value {
             font-weight: 600;
-            color: var(--accent-cyan);
+            color: var(--accent-blue);
         }
 
         .stream-url-input {
             width: 100%;
             padding: 8px;
-            border: 1px solid var(--text-white);
+            border: 1px solid var(--border-gray);
             border-radius: 4px;
             font-size: 0.85rem;
             margin-bottom: 6px;
-            background: transparent;
-            color: var(--text-white);
+            background: #FFFFFF;
+            color: var(--text-dark);
         }
 
         .buttons-row {
@@ -211,8 +204,8 @@
         .action-btn {
             flex: 1;
             padding: 8px;
-            background: #4A5568;
-            color: var(--text-white);
+            background: #A0AEC0;
+            color: #FFFFFF;
             border: none;
             border-radius: 4px;
             font-size: 0.85rem;
@@ -316,61 +309,90 @@
         // Three.js setup
         const canvas = document.getElementById('three-canvas');
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / 100, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / 120, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-        renderer.setSize(canvas.clientWidth, 100);
+        renderer.setSize(canvas.clientWidth, 120);
 
         // Lighting
-        const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
+        const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.6);
         scene.add(ambientLight);
-        const pointLight = new THREE.PointLight(0xFFFFFF, 0.5);
+        const pointLight = new THREE.PointLight(0xFFFFFF, 0.4);
         pointLight.position.set(10, 10, 10);
         scene.add(pointLight);
 
         // Grid
-        const gridHelper = new THREE.GridHelper(20, 20, 0x444444, 0x444444);
-        gridHelper.rotation.x = Math.PI / 2; // Lay flat
+        const gridHelper = new THREE.GridHelper(20, 20, 0xA0AEC0, 0xA0AEC0);
+        gridHelper.rotation.x = Math.PI / 2;
         scene.add(gridHelper);
 
-        // Axes (X: time, Y: distance)
-        const axesHelper = new THREE.AxesHelper(10);
-        scene.add(axesHelper);
+        // Axes labels
+        function createLabel(text, position) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 32;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#2D3748';
+            ctx.font = '20px Inter';
+            ctx.fillText(text, 0, 20);
+            const texture = new THREE.CanvasTexture(canvas);
+            const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+            const sprite = new THREE.Sprite(spriteMaterial);
+            sprite.position.copy(position);
+            sprite.scale.set(4, 1, 1);
+            scene.add(sprite);
+        }
 
-        // Distance data
-        const maxPoints = 20; // ~20 seconds at 1 Hz
-        let distances = [];
+        createLabel('Time (s)', new THREE.Vector3(6, -1, 0));
+        createLabel('Distance (cm)', new THREE.Vector3(-1, 6, 0));
+
+        // Data
+        const maxPoints = 20;
+        let dataPoints = [];
         let line = null;
+        let spheres = [];
 
-        function updateGraph(distance) {
-            distances.push(distance);
-            if (distances.length > maxPoints) {
-                distances.shift();
+        function updateGraph(distance, timestamp) {
+            dataPoints.push({ distance, timestamp });
+            if (dataPoints.length > maxPoints) {
+                dataPoints.shift();
             }
 
-            // Remove old line
+            // Clear previous
             if (line) {
                 scene.remove(line);
             }
+            spheres.forEach(sphere => scene.remove(sphere));
+            spheres = [];
 
-            // Create new line geometry
+            // Create line and points
             const points = [];
-            for (let i = 0; i < distances.length; i++) {
-                const x = (i / (maxPoints - 1)) * 10 - 5; // -5 to 5 on X (time)
-                const y = Math.min(distances[i] / 10, 10); // 0 to 100 cm -> 0 to 10
+            const baseTime = dataPoints[0]?.timestamp || timestamp;
+            for (let i = 0; i < dataPoints.length; i++) {
+                const time = (dataPoints[i].timestamp - baseTime) / 1000; // Seconds
+                const x = Math.min(time, 10) - 5; // -5 to 5
+                const y = Math.min(dataPoints[i].distance / 10, 5); // 0-50 cm -> 0-5
                 points.push(new THREE.Vector3(x, y, 0));
+
+                // Add sphere
+                const sphereGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+                const sphereMaterial = new THREE.MeshPhongMaterial({ color: 0x3182CE });
+                const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+                sphere.position.set(x, y, 0);
+                scene.add(sphere);
+                spheres.push(sphere);
             }
 
             const geometry = new THREE.BufferGeometry().setFromPoints(points);
-            const material = new THREE.LineBasicMaterial({ color: 0x00B7EB });
+            const material = new THREE.LineBasicMaterial({ color: 0x3182CE });
             line = new THREE.Line(geometry, material);
             scene.add(line);
 
-            // Update text display
+            // Update text
             document.getElementById('distance').textContent = parseFloat(distance).toFixed(1);
         }
 
-        camera.position.set(0, 5, 15);
-        camera.lookAt(0, 0, 0);
+        camera.position.set(0, 3, 10);
+        camera.lookAt(0, 2, 0);
 
         function animate() {
             requestAnimationFrame(animate);
@@ -394,7 +416,530 @@
                     console.log('Received:', data);
 
                     if (data.type === 'distance') {
-                        updateGraph(parseFloat(data.distance));
+                        updateGraph(parseFloat(data.distance), Date.now());
+                    } else if (data.type === 'servo') {
+                        currentAngle = data.angle;
+                        document.getElementById('servo-angle').textContent = data.angle;
+                        document.getElementById('last-command').textContent = 
+                            `Servo to ${data.angle}°`;
+                    }
+                } catch (error) {
+                    console.error('Error parsing message:', error);
+                }
+            };
+
+            ws.onclose = () => {
+                console.log('WebSocket closed');
+                updateStatus('connection-status', 'Disconnected', 'disconnected');
+                updateStatus('ws-status', 'Disconnected');
+
+                if (reconnectAttempts < maxReconnectAttempts) {
+                    const delay = Math.min(1000 * 1.5 ** reconnectAttempts, 10000);
+                    updateStatus('ws-status', `Reconnecting in ${delay/1000}s...`);
+                    setTimeout(() => {
+                        reconnectAttempts++;
+                        console.log(`Reconnect attempt ${reconnectAttempts}/${maxReconnectAttempts}`);
+                        connectWebSocket();
+                    }, delay);
+                } else {
+                    updateStatus('ws-status', 'Failed to connect');
+                }
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                updateStatus('ws-status', 'Error');
+            };
+        }
+
+        function updateStatus(elementId, text, className = null) {
+            const element = document.getElementById(elementId);
+            element.textContent = text;
+            if (className) {
+                element.className = `connection-status ${className}`;
+            }
+        }
+
+        function sendAngle(angle) {
+            if (ws?.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'servo', angle }));
+                console.log(`Sent angle: ${angle}`);
+                document.getElementById('last-command').textContent = `Servo to ${angle}°`;
+                currentAngle = angle;
+            } else {
+                console.log('WebSocket not connected');
+                document.getElementById('last-command').textContent = 'Failed: Not connected';
+            }
+        }
+
+        function connectStream() {
+            const videoFeed = document.getElementById('video-feed');
+            const streamUrl = document.getElementById('stream-url').value.trim();
+            const streamStatus = document.getElementById('stream-status');
+
+            if (!streamUrl) {
+                streamStatus.textContent = 'Please enter a valid stream URL';
+                return;
+            }
+
+            streamStatus.textContent = 'Connecting...';
+            videoFeed.style.display = 'none';
+            const urlWithTimestamp = `${streamUrl}?t=${Date.now()}`;
+            videoFeed.src = urlWithTimestamp;
+
+            videoFeed.onload = () => {
+                streamStatus.textContent = 'Connected';
+                videoFeed.style.display = 'block';
+                document.getElementById('video-message').style.display = 'none';
+                streamConnected = true;
+            };
+
+            videoFeed.onerror = () => {
+                streamStatus.textContent = 'Failed to connect to stream';
+                videoFeed.style.display = 'none';
+                document.getElementById('video-message').style.display = 'flex';
+                streamConnected = false;
+            };
+        }
+
+        function toggleStream() {
+            const videoFeed = document.getElementById('video-feed');
+            const videoMessage = document.getElementById('video-message');
+
+            if (videoFeed.style.display === 'none') {
+                videoFeed.style.display = 'block';
+                videoMessage.style.display = 'none';
+            } else {
+                videoFeed.style.display = 'none';
+                videoMessage.style.display = 'flex';
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            connectWebSocket();
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IRA Control Center</title>
+    <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-white: #F7FAFC;
+            --panel-gray: #EDF2F7;
+            --text-dark: #2D3748;
+            --accent-blue: #3182CE;
+            --border-gray: #E2E8F0;
+            --hover-blue: #2B6CB0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            line-height: 1.5;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 360px;
+            height: 100%;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        header {
+            background: var(--panel-gray);
+            padding: 8px;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .connection-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .connected {
+            background: #48BB78;
+            color: #FFFFFF;
+        }
+
+        .disconnected {
+            background: #F56565;
+            color: #FFFFFF;
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 400 / 296;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #000;
+            border: 1px solid var(--border-gray);
+        }
+
+        .video-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            margin: auto;
+            background: hsl(0, 0%, 25%);
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10;
+            font-size: 0.85rem;
+            color: #FFFFFF;
+        }
+
+        .controls {
+            background: var(--panel-gray);
+            padding: 8px;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+        }
+
+        .controls h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .angle-btns {
+            display: flex;
+            gap: 6px;
+        }
+
+        .angle-btn {
+            flex: 1;
+            padding: 8px;
+            background: var(--accent-blue);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .angle-btn:hover {
+            background: var(--hover-blue);
+        }
+
+        .graph-container {
+            background: var(--panel-gray);
+            padding: 8px;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            height: 160px;
+        }
+
+        .graph-container h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        #three-canvas {
+            width: 100%;
+            height: 120px;
+            display: block;
+        }
+
+        .info-panel {
+            background: var(--panel-gray);
+            padding: 8px;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        .info-panel h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .info-panel p {
+            margin: 4px 0;
+        }
+
+        .data-value {
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+
+        .stream-url-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-gray);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            background: #FFFFFF;
+            color: var(--text-dark);
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            background: #A0AEC0;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #718096;
+        }
+
+        @media (min-width: 600px) {
+            .container {
+                max-width: 400px;
+                padding: 12px;
+            }
+
+            header h1 {
+                font-size: 1.4rem;
+            }
+
+            .connection-status {
+                font-size: 0.85rem;
+            }
+
+            .controls h2,
+            .graph-container h2,
+            .info-panel h2 {
+                font-size: 1.1rem;
+            }
+
+            .angle-btn {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+
+            .info-panel {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>IRA Control Center</h1>
+            <div id="connection-status" class="connection-status disconnected">Disconnected</div>
+        </header>
+
+        <div class="video-container">
+            <img id="video-feed" class="video-feed" alt="ESP32-CAM Stream" src="http://192.168.0.121:81/stream">
+            <div id="video-message" class="video-overlay" style="display: none;">
+                <div>
+                    <h3>Video Stream</h3>
+                    <p id="stream-status">Enter ESP32-CAM stream URL and connect</p>
+                    <input type="text" id="stream-url" class="stream-url-input" 
+                           placeholder="http://<ESP32-IP>:81/stream">
+                    <div class="buttons-row">
+                        <button class="action-btn" onclick="connectStream()">Connect</button>
+                        <button class="action-btn" onclick="toggleStream()">Show/Hide</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="controls">
+            <h2>Servo Control</h2>
+            <div class="angle-btns">
+                <button class="angle-btn" onclick="sendAngle(0)">0°</button>
+                <button class="angle-btn" onclick="sendAngle(45)">45°</button>
+                <button class="angle-btn" onclick="sendAngle(90)">90°</button>
+                <button class="angle-btn" onclick="sendAngle(135)">135°</button>
+                <button class="angle-btn" onclick="sendAngle(180)">180°</button>
+            </div>
+        </section>
+
+        <section class="graph-container">
+            <h2>Distance Over Time</h2>
+            <canvas id="three-canvas"></canvas>
+        </section>
+
+        <section class="info-panel">
+            <h2>Sensor Data</h2>
+            <p>Distance: <span id="distance" class="data-value">Waiting...</span> cm</p>
+            <p>Servo Angle: <span id="servo-angle" class="data-value">90</span>°</p>
+            <p>Last Command: <span id="last-command" class="data-value">None</span></p>
+            <p>WebSocket Status: <span id="ws-status" class="data-value">Connecting...</span></p>
+        </section>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script>
+        const wsUrl = 'ws://localhost:8765';
+        let ws;
+        let reconnectAttempts = 0;
+        const maxReconnectAttempts = 10;
+        let currentAngle = 90;
+        let streamConnected = true;
+
+        // Three.js setup
+        const canvas = document.getElementById('three-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / 120, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        renderer.setSize(canvas.clientWidth, 120);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.6);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xFFFFFF, 0.4);
+        pointLight.position.set(10, 10, 10);
+        scene.add(pointLight);
+
+        // Grid
+        const gridHelper = new THREE.GridHelper(20, 20, 0xA0AEC0, 0xA0AEC0);
+        gridHelper.rotation.x = Math.PI / 2;
+        scene.add(gridHelper);
+
+        // Axes labels
+        function createLabel(text, position) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 32;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#2D3748';
+            ctx.font = '20px Inter';
+            ctx.fillText(text, 0, 20);
+            const texture = new THREE.CanvasTexture(canvas);
+            const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+            const sprite = new THREE.Sprite(spriteMaterial);
+            sprite.position.copy(position);
+            sprite.scale.set(4, 1, 1);
+            scene.add(sprite);
+        }
+
+        createLabel('Time (s)', new THREE.Vector3(6, -1, 0));
+        createLabel('Distance (cm)', new THREE.Vector3(-1, 6, 0));
+
+        // Data
+        const maxPoints = 20;
+        let dataPoints = [];
+        let line = null;
+        let spheres = [];
+
+        function updateGraph(distance, timestamp) {
+            dataPoints.push({ distance, timestamp });
+            if (dataPoints.length > maxPoints) {
+                dataPoints.shift();
+            }
+
+            // Clear previous
+            if (line) {
+                scene.remove(line);
+            }
+            spheres.forEach(sphere => scene.remove(sphere));
+            spheres = [];
+
+            // Create line and points
+            const points = [];
+            const baseTime = dataPoints[0]?.timestamp || timestamp;
+            for (let i = 0; i < dataPoints.length; i++) {
+                const time = (dataPoints[i].timestamp - baseTime) / 1000; // Seconds
+                const x = Math.min(time, 10) - 5; // -5 to 5
+                const y = Math.min(dataPoints[i].distance / 10, 5); // 0-50 cm -> 0-5
+                points.push(new THREE.Vector3(x, y, 0));
+
+                // Add sphere
+                const sphereGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+                const sphereMaterial = new THREE.MeshPhongMaterial({ color: 0x3182CE });
+                const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+                sphere.position.set(x, y, 0);
+                scene.add(sphere);
+                spheres.push(sphere);
+            }
+
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ color: 0x3182CE });
+            line = new THREE.Line(geometry, material);
+            scene.add(line);
+
+            // Update text
+            document.getElementById('distance').textContent = parseFloat(distance).toFixed(1);
+        }
+
+        camera.position.set(0, 3, 10);
+        camera.lookAt(0, 2, 0);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        function connectWebSocket() {
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                console.log('WebSocket connected');
+                updateStatus('connection-status', 'Connected', 'connected');
+                updateStatus('ws-status', 'Connected');
+                reconnectAttempts = 0;
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    console.log('Received:', data);
+
+                    if (data.type === 'distance') {
+                        updateGraph(parseFloat(data.distance), Date.now());
                     } else if (data.type === 'servo') {
                         currentAngle = data.angle;
                         document.getElementById('servo-angle').textContent = data.angle;
