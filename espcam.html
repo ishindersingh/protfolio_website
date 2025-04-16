@@ -5,58 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESP32-CAM Control Center</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --hover-color: #2980b9;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --background-color: #f5f5f7;
+            --panel-bg: #ffffff;
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f7;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--background-color);
             color: #333;
+            line-height: 1.5;
             overflow: hidden; /* Prevent scrolling */
         }
+
         .container {
             max-width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            height: 100vh; /* Full viewport height */
+            height: 100vh;
+            padding: 8px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 8px;
         }
+
         header {
-            background-color: #2c3e50;
+            background-color: var(--primary-color);
             color: white;
             padding: 8px;
-            border-radius: 8px 8px 0 0;
+            border-radius: 8px;
             text-align: center;
-            margin-bottom: 5px;
         }
+
         header h1 {
             font-size: 1.2rem;
+            font-weight: 600;
             margin: 0;
         }
+
+        .connection-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .connected {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .disconnected {
+            background-color: var(--error-color);
+            color: white;
+        }
+
         .video-container {
             width: 100%;
-            max-width: 360px; /* Slightly smaller than CIF for mobile */
-            aspect-ratio: 400 / 296; /* Maintain CIF aspect ratio */
-            position: relative;
+            max-width: 360px; /* Scaled for mobile */
+            aspect-ratio: 400 / 296; /* CIF resolution */
+            margin: 0 auto;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin: 0 auto 5px;
             background-color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow: var(--shadow);
+            position: relative;
         }
+
         .video-feed {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Ensure no stretching */
+            object-fit: contain;
             display: block;
             -webkit-user-select: none;
             margin: auto;
             background-color: hsl(0, 0%, 25%);
         }
+
         .video-overlay {
             position: absolute;
             top: 0;
@@ -66,117 +103,143 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: rgba(0,0,0,0.7);
+            background-color: rgba(0, 0, 0, 0.7);
             color: white;
             z-index: 10;
+            font-size: 0.85rem;
         }
+
         .controls {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 5px;
+            background-color: var(--panel-bg);
             padding: 8px;
-            background-color: white;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow);
         }
+
+        .controls h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
         .angle-btns {
             display: flex;
-            justify-content: space-between;
-            width: 100%;
-            gap: 5px;
+            gap: 6px;
         }
+
         .angle-btn {
-            padding: 8px 0;
-            background-color: #3498db;
+            flex: 1;
+            padding: 8px;
+            background-color: var(--accent-color);
             color: white;
             border: none;
-            border-radius: 25px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: background-color 0.3s;
-            flex: 1;
+            transition: background-color 0.2s;
+            touch-action: manipulation;
         }
+
         .angle-btn:hover {
-            background-color: #2980b9;
+            background-color: var(--hover-color);
         }
+
+        .angle-btn:focus {
+            outline: 2px solid var(--hover-color);
+            outline-offset: 2px;
+        }
+
         .info-panel {
-            background-color: white;
+            background-color: var(--panel-bg);
+            padding: 8px;
             border-radius: 8px;
-            padding: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            font-size: 0.85rem;
+            box-shadow: var(--shadow);
+            font-size: 0.8rem;
         }
-        .info-panel h3 {
+
+        .info-panel h2 {
             font-size: 1rem;
-            margin: 0 0 5px;
+            font-weight: 600;
+            margin-bottom: 6px;
         }
+
         .info-panel p {
-            margin: 3px 0;
+            margin: 4px 0;
         }
+
         .data-value {
-            font-weight: bold;
-            color: #e74c3c;
+            font-weight: 600;
+            color: var(--error-color);
         }
-        .connection-status {
-            padding: 4px 8px;
-            border-radius: 15px;
-            font-size: 0.75rem;
-            display: inline-block;
-        }
-        .connected {
-            background-color: #2ecc71;
-            color: white;
-        }
-        .disconnected {
-            background-color: #e74c3c;
-            color: white;
-        }
-        .buttons-row {
-            display: flex;
-            gap: 5px;
-            margin-top: 5px;
-        }
-        .action-btn {
-            padding: 8px;
-            background-color: #95a5a6;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            flex: 1;
-        }
-        .action-btn:hover {
-            background-color: #7f8c8d;
-        }
+
         .stream-url-input {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            margin-bottom: 5px;
             font-size: 0.85rem;
+            margin-bottom: 6px;
         }
-        @media (max-width: 600px) {
+
+        .buttons-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: #7f8c8d;
+        }
+
+        .action-btn:focus {
+            outline: 2px solid #7f8c8d;
+            outline-offset: 2px;
+        }
+
+        @media (min-width: 600px) {
             .container {
-                padding: 5px;
+                max-width: 400px;
+                margin: 0 auto;
+                padding: 12px;
             }
+
             header h1 {
-                font-size: 1rem;
+                font-size: 1.4rem;
             }
+
+            .connection-status {
+                font-size: 0.85rem;
+            }
+
             .video-container {
-                max-width: 100%; /* Full width on small screens */
+                max-width: 400px; /* Full CIF width */
             }
+
+            .controls h2,
+            .info-panel h2 {
+                font-size: 1.1rem;
+            }
+
             .angle-btn {
-                font-size: 0.8rem;
-                padding: 6px 0;
-            }
-            .info-panel {
-                font-size: 0.75rem;
-            }
-            .info-panel h3 {
                 font-size: 0.9rem;
+                padding: 10px;
+            }
+
+            .info-panel {
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -194,20 +257,18 @@
                 <div>
                     <h3>Video Stream</h3>
                     <p id="stream-status">Enter ESP32-CAM stream URL and connect</p>
-                    <div>
-                        <input type="text" id="stream-url" class="stream-url-input" 
-                               placeholder="ESP32-CAM Stream URL (e.g., http://<ESP32-IP>:81/stream)">
-                        <div class="buttons-row">
-                            <button class="action-btn" onclick="connectStream()">Connect</button>
-                            <button class="action-btn" onclick="toggleStream()">Show/Hide</button>
-                        </div>
+                    <input type="text" id="stream-url" class="stream-url-input" 
+                           placeholder="ESP32-CAM Stream URL (e.g., http://<ESP32-IP>:81/stream)">
+                    <div class="buttons-row">
+                        <button class="action-btn" onclick="connectStream()">Connect</button>
+                        <button class="action-btn" onclick="toggleStream()">Show/Hide</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="controls">
-            <h3 style="font-size: 1rem; margin: 0 0 5px;">Servo Control</h3>
+        <section class="controls">
+            <h2>Servo Control</h2>
             <div class="angle-btns">
                 <button class="angle-btn" onclick="sendAngle(0)">0°</button>
                 <button class="angle-btn" onclick="sendAngle(45)">45°</button>
@@ -215,71 +276,145 @@
                 <button class="angle-btn" onclick="sendAngle(135)">135°</button>
                 <button class="angle-btn" onclick="sendAngle(180)">180°</button>
             </div>
-        </div>
+        </section>
 
-        <div class="info-panel">
-            <h3>Sensor Data</h3>
+        <section class="info-panel">
+            <h2>Sensor Data</h2>
             <p>Distance: <span id="distance" class="data-value">Waiting...</span> cm</p>
             <p>Servo Angle: <span id="servo-angle" class="data-value">90</span>°</p>
-            <p>Last command: <span id="last-command" class="data-value">None</span></p>
-            <p>WebSocket status: <span id="ws-status" class="data-value">Connecting...</span></p>
-        </div>
+            <p>Last Command: <span id="last-command" class="data-value">None</span></p>
+            <p>WebSocket Status: <span id="ws-status" class="data-value">Connecting...</span></p>
+        </section>
     </div>
 
     <script>
-        // WebSocket connection
+        const wsUrl = 'wss://esp-cam-server.onrender.com';
         let ws;
         let reconnectAttempts = 0;
-        let reconnectInterval;
         const maxReconnectAttempts = 10;
         let currentAngle = 90;
         let streamConnected = true;
 
         function connectWebSocket() {
-            ws = new WebSocket('wss://esp-cam-server.onrender.com');
-            
+            ws = new WebSocket(wsUrl);
+
             ws.onopen = () => {
                 console.log('WebSocket connected');
-                document.getElementById('connection-status').textContent = 'Connected';
-                document.getElementById('connection-status').className = 'connection-status connected';
-                document.getElementById('ws-status').textContent = 'Connected';
+                updateStatus('connection-status', 'Connected', 'connected');
+                updateStatus('ws-status', 'Connected');
                 reconnectAttempts = 0;
-                clearInterval(reconnectInterval);
             };
-            
+
             ws.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    console.log('Received message:', data);
-                    
+                    console.log('Received:', data);
+
                     if (data.type === 'distance') {
-                        // Format distance to 1 decimal place
-                        const formattedDistance = parseFloat(data.distance).toFixed(1);
-                        document.getElementById('distance').textContent = formattedDistance;
+                        document.getElementById('distance').textContent = 
+                            parseFloat(data.distance).toFixed(1);
                     } else if (data.type === 'servo') {
-                        updateAngleUI(data.angle);
+                        currentAngle = data.angle;
                         document.getElementById('servo-angle').textContent = data.angle;
-                        document.getElementById('last-command').textContent = `Servo to ${data.angle}°`;
+                        document.getElementById('last-command').textContent = 
+                            `Servo to ${data.angle}°`;
                     }
-                } catch (e) {
-                    console.error('Error parsing message:', e);
+                } catch (error) {
+                    console.error('Error parsing message:', error);
                 }
             };
-            
+
             ws.onclose = () => {
                 console.log('WebSocket closed');
-                document.getElementById('connection-status').textContent = 'Disconnected';
-                document.getElementById('connection-status').className = 'connection-status disconnected';
-                document.getElementById('ws-status').textContent = 'Disconnected';
-                
+                updateStatus('connection-status', 'Disconnected', 'disconnected');
+                updateStatus('ws-status', 'Disconnected');
+
                 if (reconnectAttempts < maxReconnectAttempts) {
-                    const delay = Math.min(1000 * Math.pow(1.5, reconnectAttempts), 10000);
-                    console.log(`Reconnecting in ${delay/1000} seconds...`);
-                    document.getElementById('ws-status').textContent = `Reconnecting in ${delay/1000}s...`;
-                    
-                    clearInterval(reconnectInterval);
-                    reconnectInterval = setTimeout(() => {
- Hildebrand, and he was like, "Whoa, I can make stuff disappear!" So, he made his homework vanish, but now he's got a problem—his teacher wants to see it! 😅 Should he:
-A) Tell the truth and risk detention?
-B) Blame it on a quantum anomaly?
-C) Whip up a fake homework with Grok's help?
+                    const delay = Math.min(1000 * 1.5 ** reconnectAttempts, 10000);
+                    updateStatus('ws-status', `Reconnecting in ${delay/1000}s...`);
+                    setTimeout(() => {
+                        reconnectAttempts++;
+                        console.log(`Reconnect attempt ${reconnectAttempts}/${maxReconnectAttempts}`);
+                        connectWebSocket();
+                    }, delay);
+                } else {
+                    updateStatus('ws-status', 'Failed to connect');
+                }
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                updateStatus('ws-status', 'Error');
+            };
+        }
+
+        function updateStatus(elementId, text, className = null) {
+            const element = document.getElementById(elementId);
+            element.textContent = text;
+            if (className) {
+                element.className = `connection-status ${className}`;
+            }
+        }
+
+        function sendAngle(angle) {
+            if (ws?.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'servo', angle }));
+                console.log(`Sent angle: ${angle}`);
+                document.getElementById('last-command').textContent = `Servo to ${angle}°`;
+                currentAngle = angle;
+            } else {
+                console.log('WebSocket not connected');
+                document.getElementById('last-command').textContent = 'Failed: Not connected';
+            }
+        }
+
+        function connectStream() {
+            const videoFeed = document.getElementById('video-feed');
+            const streamUrl = document.getElementById('stream-url').value.trim();
+            const streamStatus = document.getElementById('stream-status');
+
+            if (!streamUrl) {
+                streamStatus.textContent = 'Please enter a valid stream URL';
+                return;
+            }
+
+            streamStatus.textContent = 'Connecting...';
+            videoFeed.style.display = 'none';
+            const urlWithTimestamp = `${streamUrl}?t=${Date.now()}`;
+            videoFeed.src = urlWithTimestamp;
+
+            videoFeed.onload = () => {
+                streamStatus.textContent = 'Connected';
+                videoFeed.style.display = 'block';
+                document.getElementById('video-message').style.display = 'none';
+                streamConnected = true;
+            };
+
+            videoFeed.onerror = () => {
+                streamStatus.textContent = 'Failed to connect to stream. Check URL or network.';
+                videoFeed.style.display = 'none';
+                document.getElementById('video-message').style.display = 'flex';
+                streamConnected = false;
+            };
+        }
+
+        function toggleStream() {
+            const videoFeed = document.getElementById('video-feed');
+            const videoMessage = document.getElementById('video-message');
+
+            if (videoFeed.style.display === 'none') {
+                videoFeed.style.display = 'block';
+                videoMessage.style.display = 'none';
+            } else {
+                videoFeed.style.display = 'none';
+                videoMessage.style.display = 'flex';
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            connectWebSocket();
+        });
+    </script>
+</body>
+</html>
