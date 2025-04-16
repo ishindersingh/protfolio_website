@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IRA Control Center</title>
+    <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
     <style>
         :root {
-            --primary-purple: #4B0082;
-            --accent-teal: #008080;
-            --text-white: #FFFFFF;
-            --panel-bg: rgba(255, 255, 255, 0.1);
-            --shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            --hover-teal: #00A0A0;
+            --bg-dark: #1A202C;
+            --bg-accent: #2D3748;
+            --accent-cyan: #00B7EB;
+            --text-white: #F7FAFC;
+            --panel-bg: rgba(255, 255, 255, 0.05);
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            --hover-cyan: #00D4FF;
         }
 
         * {
@@ -21,8 +23,8 @@
         }
 
         body {
-            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: radial-gradient(circle at center, #2C003E 0%, #000000 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-accent) 100%);
             color: var(--text-white);
             line-height: 1.5;
             overflow: hidden;
@@ -42,10 +44,11 @@
         }
 
         header {
-            background: var(--primary-purple);
+            background: var(--panel-bg);
             padding: 8px;
             border-radius: 8px;
             text-align: center;
+            backdrop-filter: blur(8px);
         }
 
         header h1 {
@@ -105,7 +108,7 @@
 
         .controls {
             background: var(--panel-bg);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
             padding: 8px;
             border-radius: 8px;
             box-shadow: var(--shadow);
@@ -125,10 +128,10 @@
         .angle-btn {
             flex: 1;
             padding: 8px;
-            background: var(--accent-teal);
+            background: var(--accent-cyan);
             color: var(--text-white);
             border: none;
-            border-radius: 20px;
+            border-radius: 8px;
             font-size: 0.85rem;
             font-weight: 500;
             cursor: pointer;
@@ -136,8 +139,8 @@
         }
 
         .angle-btn:hover {
-            background: var(--hover-teal);
-            transform: translateY(-2px);
+            background: var(--hover-cyan);
+            transform: translateY(-1px);
         }
 
         .angle-btn:active {
@@ -146,12 +149,11 @@
 
         .graph-container {
             background: var(--panel-bg);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
             padding: 8px;
             border-radius: 8px;
             box-shadow: var(--shadow);
-            height: 150px;
-            position: relative;
+            height: 140px;
         }
 
         .graph-container h2 {
@@ -168,7 +170,7 @@
 
         .info-panel {
             background: var(--panel-bg);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
             padding: 8px;
             border-radius: 8px;
             box-shadow: var(--shadow);
@@ -187,7 +189,7 @@
 
         .data-value {
             font-weight: 600;
-            color: var(--accent-teal);
+            color: var(--accent-cyan);
         }
 
         .stream-url-input {
@@ -209,7 +211,7 @@
         .action-btn {
             flex: 1;
             padding: 8px;
-            background: #666;
+            background: #4A5568;
             color: var(--text-white);
             border: none;
             border-radius: 4px;
@@ -220,7 +222,7 @@
         }
 
         .action-btn:hover {
-            background: #888;
+            background: #718096;
         }
 
         @media (min-width: 600px) {
@@ -289,7 +291,7 @@
         </section>
 
         <section class="graph-container">
-            <h2>Distance Graph</h2>
+            <h2>Distance Over Time</h2>
             <canvas id="three-canvas"></canvas>
         </section>
 
@@ -326,33 +328,55 @@
         scene.add(pointLight);
 
         // Grid
-        const gridHelper = new THREE.GridHelper(10, 10, 0x444444, 0x444444);
+        const gridHelper = new THREE.GridHelper(20, 20, 0x444444, 0x444444);
+        gridHelper.rotation.x = Math.PI / 2; // Lay flat
         scene.add(gridHelper);
 
-        // Bar for distance
-        const barGeometry = new THREE.BoxGeometry(1, 1, 1);
-        const barMaterial = new THREE.MeshPhongMaterial({ color: 0x008080 });
-        let bar = new THREE.Mesh(barGeometry, barMaterial);
-        scene.add(bar);
+        // Axes (X: time, Y: distance)
+        const axesHelper = new THREE.AxesHelper(10);
+        scene.add(axesHelper);
 
-        camera.position.set(5, 5, 10);
+        // Distance data
+        const maxPoints = 20; // ~20 seconds at 1 Hz
+        let distances = [];
+        let line = null;
+
+        function updateGraph(distance) {
+            distances.push(distance);
+            if (distances.length > maxPoints) {
+                distances.shift();
+            }
+
+            // Remove old line
+            if (line) {
+                scene.remove(line);
+            }
+
+            // Create new line geometry
+            const points = [];
+            for (let i = 0; i < distances.length; i++) {
+                const x = (i / (maxPoints - 1)) * 10 - 5; // -5 to 5 on X (time)
+                const y = Math.min(distances[i] / 10, 10); // 0 to 100 cm -> 0 to 10
+                points.push(new THREE.Vector3(x, y, 0));
+            }
+
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ color: 0x00B7EB });
+            line = new THREE.Line(geometry, material);
+            scene.add(line);
+
+            // Update text display
+            document.getElementById('distance').textContent = parseFloat(distance).toFixed(1);
+        }
+
+        camera.position.set(0, 5, 15);
         camera.lookAt(0, 0, 0);
 
         function animate() {
             requestAnimationFrame(animate);
-            bar.rotation.y += 0.01;
             renderer.render(scene, camera);
         }
         animate();
-
-        function updateGraph(distance) {
-            scene.remove(bar);
-            const height = Math.min(distance / 10, 10); // Scale distance (max 100 cm = 10 units)
-            const newGeometry = new THREE.BoxGeometry(1, height, 1);
-            bar = new THREE.Mesh(newGeometry, barMaterial);
-            bar.position.y = height / 2; // Center vertically
-            scene.add(bar);
-        }
 
         function connectWebSocket() {
             ws = new WebSocket(wsUrl);
@@ -370,8 +394,6 @@
                     console.log('Received:', data);
 
                     if (data.type === 'distance') {
-                        const distance = parseFloat(data.distance).toFixed(1);
-                        document.getElementById('distance').textContent = distance;
                         updateGraph(parseFloat(data.distance));
                     } else if (data.type === 'servo') {
                         currentAngle = data.angle;
