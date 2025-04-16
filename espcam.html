@@ -27,7 +27,7 @@
             background-color: var(--background-color);
             color: #333;
             line-height: 1.5;
-            overflow: hidden; /* Prevent scrolling */
+            overflow: hidden;
         }
 
         .container {
@@ -74,8 +74,8 @@
 
         .video-container {
             width: 100%;
-            max-width: 360px; /* Scaled for mobile */
-            aspect-ratio: 400 / 296; /* CIF resolution */
+            max-width: 360px;
+            aspect-ratio: 400 / 296;
             margin: 0 auto;
             border-radius: 8px;
             overflow: hidden;
@@ -225,7 +225,7 @@
             }
 
             .video-container {
-                max-width: 400px; /* Full CIF width */
+                max-width: 400px;
             }
 
             .controls h2,
@@ -282,13 +282,13 @@
             <h2>Sensor Data</h2>
             <p>Distance: <span id="distance" class="data-value">Waiting...</span> cm</p>
             <p>Servo Angle: <span id="servo-angle" class="data-value">90</span>°</p>
-            <p>Last Command: <span id="last-command" class="data-value">None</span></p>
+            <p>Last Command: <span id="last-command" class="data-value">None</p>
             <p>WebSocket Status: <span id="ws-status" class="data-value">Connecting...</span></p>
         </section>
     </div>
 
     <script>
-        const wsUrl = 'wss://esp-cam-server.onrender.com';
+        const wsUrl = 'ws://localhost:8765';
         let ws;
         let reconnectAttempts = 0;
         const maxReconnectAttempts = 10;
