@@ -372,12 +372,19 @@
     </style>
 </head>
 <body>
-    <img style="display: block;-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 25%);" src="http://192.168.0.119:81/stream">
     <div class="container">
         <header>
             <h1>IRA Control Center</h1>
             <div id="connection-status" class="connection-status disconnected">Disconnected</div>
         </header>
+
+        <section class="video-container">
+            <img id="video-feed" class="video-feed" src="http://192.168.0.119:81/stream?t=0" alt="Video Stream">
+            <div id="video-message" class="video-overlay" style="display: flex;">
+                Failed to connect to stream
+            </div>
+        </section>
+
         <section class="controls">
             <h2>Servo Control</h2>
             <div class="angle-btns">
@@ -438,7 +445,7 @@
         let reconnectAttempts = 0;
         const maxReconnectAttempts = 10;
         let currentAngle = 90;
-        let streamConnected = true;
+        let streamConnected = false;
         let graphResizeTimer;
 
         // Three.js setup
@@ -618,47 +625,32 @@
             }
         }
 
-        function connectStream() {
+        function checkStreamConnection() {
             const videoFeed = document.getElementById('video-feed');
-            const streamUrl = document.getElementById('stream-url').value.trim();
-            const streamStatus = document.getElementById('stream-status');
-
-            if (!streamUrl) {
-                streamStatus.textContent = 'Please enter a valid stream URL';
-                return;
-            }
-
-            streamStatus.textContent = 'Connecting...';
-            videoFeed.style.display = 'none';
+            const videoMessage = document.getElementById('video-message');
+            const streamUrl = 'http://192.168.0.119:81/stream';
+            
+            // Add timestamp to prevent caching
             const urlWithTimestamp = `${streamUrl}?t=${Date.now()}`;
             videoFeed.src = urlWithTimestamp;
 
             videoFeed.onload = () => {
-                streamStatus.textContent = 'Connected';
+                videoMessage.style.display = 'none';
                 videoFeed.style.display = 'block';
-                document.getElementById('video-message').style.display = 'none';
                 streamConnected = true;
+                console.log('Stream connected');
+                // Periodically refresh to maintain stream
+                setTimeout(checkStreamConnection, 30000); // Check every 30 seconds
             };
 
             videoFeed.onerror = () => {
-                streamStatus.textContent = 'Failed to connect to stream';
-                videoFeed.style.display = 'none';
-                document.getElementById('video-message').style.display = 'flex';
-                streamConnected = false;
-            };
-        }
-
-        function toggleStream() {
-            const videoFeed = document.getElementById('video-feed');
-            const videoMessage = document.getElementById('video-message');
-
-            if (videoFeed.style.display === 'none') {
-                videoFeed.style.display = 'block';
-                videoMessage.style.display = 'none';
-            } else {
-                videoFeed.style.display = 'none';
                 videoMessage.style.display = 'flex';
-            }
+                videoFeed.style.display = 'none';
+                streamConnected = false;
+                console.log('Stream disconnected');
+                // Retry after delay
+                setTimeout(checkStreamConnection, 5000); // Retry every 5 seconds
+            };
         }
 
         // Demo data for preview
@@ -675,6 +667,7 @@
         // Initialize
         window.addEventListener('load', () => {
             connectWebSocket();
+            checkStreamConnection();
             handleResize();
             
             // Show some demo data if we're not connected within 2 seconds
