@@ -99,7 +99,8 @@
             object-fit: contain;
             display: block;
             margin: auto;
-            background: hsl(0, 0%, 15%);
+            background-color: hsl(0, 0%, 25%);
+            -webkit-user-select: none;
         }
 
         .video-overlay {
@@ -354,7 +355,6 @@
             }
         }
 
-        /* Dark mode support */
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-white: #1A202C;
@@ -379,8 +379,8 @@
         </header>
 
         <section class="video-container">
-            <img id="video-feed" class="video-feed" src="http://192.168.0.119:81/stream?t=0" alt="Video Stream">
-            <div id="video-message" class="video-overlay" style="display: flex;">
+            <img id="video-feed" class="video-feed" style="display: block;-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 25%);" src="http://192.168.0.119:81/stream?t=0" alt="Video Stream">
+            <div id="video-message" class="video-overlay" style="display: none;">
                 Failed to connect to stream
             </div>
         </section>
@@ -435,18 +435,25 @@
                 <span class="data-label">WebSocket Status:</span>
                 <span id="ws-status" class="data-value">Connecting...</span>
             </p>
+            <p>
+                <span class="data-label">Stream Status:</span>
+                <span id="stream-status" class="data-value">Connecting...</span>
+            </p>
         </section>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script>
         const wsUrl = 'ws://localhost:8765';
+        const streamUrl = 'http://192.168.0.119:81/stream';
         let ws;
         let reconnectAttempts = 0;
         const maxReconnectAttempts = 10;
         let currentAngle = 90;
         let streamConnected = false;
         let graphResizeTimer;
+        let streamReconnectAttempts = 0;
+        const maxStreamReconnectAttempts = 5;
 
         // Three.js setup
         const container = document.getElementById('three-canvas-container');
@@ -628,28 +635,39 @@
         function checkStreamConnection() {
             const videoFeed = document.getElementById('video-feed');
             const videoMessage = document.getElementById('video-message');
-            const streamUrl = 'http://192.168.0.119:81/stream';
-            
+            const streamStatus = document.getElementById('stream-status');
+
             // Add timestamp to prevent caching
             const urlWithTimestamp = `${streamUrl}?t=${Date.now()}`;
             videoFeed.src = urlWithTimestamp;
 
             videoFeed.onload = () => {
+                console.log('Stream loaded successfully');
                 videoMessage.style.display = 'none';
                 videoFeed.style.display = 'block';
                 streamConnected = true;
-                console.log('Stream connected');
-                // Periodically refresh to maintain stream
-                setTimeout(checkStreamConnection, 30000); // Check every 30 seconds
+                streamReconnectAttempts = 0;
+                streamStatus.textContent = 'Connected';
+                // Refresh stream every 10 seconds to maintain live feed
+                setTimeout(checkStreamConnection, 10000);
             };
 
             videoFeed.onerror = () => {
+                console.error('Stream failed to load');
                 videoMessage.style.display = 'flex';
                 videoFeed.style.display = 'none';
                 streamConnected = false;
-                console.log('Stream disconnected');
-                // Retry after delay
-                setTimeout(checkStreamConnection, 5000); // Retry every 5 seconds
+                streamStatus.textContent = 'Disconnected';
+                
+                if (streamReconnectAttempts < maxStreamReconnectAttempts) {
+                    streamReconnectAttempts++;
+                    console.log(`Stream reconnect attempt ${streamReconnectAttempts}/${maxStreamReconnectAttempts}`);
+                    streamStatus.textContent = `Reconnecting in 5s...`;
+                    setTimeout(checkStreamConnection, 5000);
+                } else {
+                    streamStatus.textContent = 'Failed to connect';
+                    console.error('Max stream reconnect attempts reached');
+                }
             };
         }
 
@@ -670,7 +688,7 @@
             checkStreamConnection();
             handleResize();
             
-            // Show some demo data if we're not connected within 2 seconds
+            // Show demo data if WebSocket not connected within 2 seconds
             setTimeout(() => {
                 if (!ws || ws.readyState !== WebSocket.OPEN) {
                     demoData();
