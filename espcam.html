@@ -379,7 +379,7 @@
         </header>
 
         <section class="video-container">
-            <img id="video-feed" class="video-feed" style="display: block;-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 25%);" src="http://192.168.0.119:81/stream?t=0" alt="Video Stream">
+            <img id="video-feed" class="video-feed" src="" alt="Video Stream">
             <div id="video-message" class="video-overlay" style="display: none;">
                 Failed to connect to stream
             </div>
@@ -454,6 +454,7 @@
         let graphResizeTimer;
         let streamReconnectAttempts = 0;
         const maxStreamReconnectAttempts = 5;
+        let streamRefreshInterval;
 
         // Three.js setup
         const container = document.getElementById('three-canvas-container');
@@ -637,6 +638,11 @@
             const videoMessage = document.getElementById('video-message');
             const streamStatus = document.getElementById('stream-status');
 
+            // Clear any existing interval
+            if (streamRefreshInterval) {
+                clearInterval(streamRefreshInterval);
+            }
+
             // Add timestamp to prevent caching
             const urlWithTimestamp = `${streamUrl}?t=${Date.now()}`;
             videoFeed.src = urlWithTimestamp;
@@ -648,8 +654,11 @@
                 streamConnected = true;
                 streamReconnectAttempts = 0;
                 streamStatus.textContent = 'Connected';
-                // Refresh stream every 10 seconds to maintain live feed
-                setTimeout(checkStreamConnection, 10000);
+                
+                // Refresh stream every 5 seconds to maintain connection
+                streamRefreshInterval = setInterval(() => {
+                    videoFeed.src = `${streamUrl}?t=${Date.now()}`;
+                }, 5000);
             };
 
             videoFeed.onerror = () => {
