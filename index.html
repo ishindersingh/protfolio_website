@@ -308,6 +308,65 @@
             border-radius: 10px;
         }
 
+        /* New store components section */
+        .store {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                url('https://images.unsplash.com/photo-1555664424-778a1e5e1b48?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+            padding: 80px 5%;
+        }
+
+        .store-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .store-content p {
+            font-size: 22px;
+            margin-bottom: 30px;
+            color: #eee;
+        }
+
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .component-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(107, 72, 255, 0.2);
+        }
+
+        .component-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 212, 180, 0.3);
+            background: rgba(107, 72, 255, 0.1);
+        }
+
+        .component-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #00D4B4;
+        }
+
+        .component-item h3 {
+            color: #fff;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .component-item p {
+            color: #ccc;
+            font-size: 16px;
+            margin-bottom: 0;
+        }
+
         footer {
             background: #111;
             text-align: center;
@@ -416,6 +475,10 @@
             .project-info p {
                 font-size: 18px;
             }
+
+            .components-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media screen and (max-width: 480px) {
@@ -475,8 +538,8 @@
         <div class="nav-links">
             <a href="#about">About Us</a>
             <a href="#projects">Projects</a>
-            <a href="#invest">Invest</a>
-            <a href="#plans">Our Plan</a>
+            <a href="#plans">Our Vision</a>
+            <a href="#store">Components Store</a>
             <a href="#contact">Contact</a>
         </div>
     </nav>
@@ -487,7 +550,8 @@
             <p>Welcome to Ishinders Research Lab and Automation - where innovative technology transforms into practical
                 solutions.<br> NOTE : Our website is still in dev phase.</p>
             <div class="buttons">
-                <a href="#contact" class="action-btn">Contact & Invest</a>
+                <a href="#store" class="action-btn">Shop Components</a>
+                <a href="#contact" class="action-btn">Contact Us</a>
             </div>
         </div>
     </section>
@@ -516,7 +580,7 @@
                 <div class="project-info">
                     <h3>AI FIR Generator</h3>
                     <p>We've created this website to make filing an FIR easier. Just describe the incident in a casual
-                        conversation, and we’ll structure it into a formal, legally sound FIR for you.</p>
+                        conversation, and we'll structure it into a formal, legally sound FIR for you.</p>
                     <p><strong>Progress:</strong> Basic prototype completed; currently optimizing algorithms and designs
                         for peak efficiency.</p>
                     <div class="progress-bar">
@@ -594,9 +658,44 @@
         </div>
     </section>
 
+    <!-- New Components Store Section -->
+    <section class="section store" id="store">
+        <h2 class="section-title">Components Store</h2>
+        <div class="store-content">
+            <p>Find everything you need for your next innovative project. We offer a carefully curated selection of high-quality electronic components, development boards, sensors, and IoT devices to bring your ideas to life.</p>
+            
+            <div class="components-grid">
+                <div class="component-item">
+                    <div class="component-icon">🔌</div>
+                    <h3>Microcontrollers</h3>
+                    <p>Arduino, ESP32, Raspberry Pi and more</p>
+                </div>
+                <div class="component-item">
+                    <div class="component-icon">📡</div>
+                    <h3>Sensors</h3>
+                    <p>Temperature, motion, proximity sensors</p>
+                </div>
+                <div class="component-item">
+                    <div class="component-icon">🔧</div>
+                    <h3>Development Tools</h3>
+                    <p>Breadboards, jumper wires, soldering equipment</p>
+                </div>
+                <div class="component-item">
+                    <div class="component-icon">💡</div>
+                    <h3>IoT Devices</h3>
+                    <p>Smart home components and connectivity modules</p>
+                </div>
+            </div>
+            
+            <p>Our online store provides secure checkout and fast delivery so you can get started on your projects without delay.</p>
+            
+            <a href="https://pages.razorpay.com/stores/iraa" target="_blank" class="action-btn">Shop Now</a>
+        </div>
+    </section>
+
     <section class="section contact" id="contact">
         <h2 class="section-title">Contact Us</h2>
-        <p>Interested in partnering with us on this journey of innovation? Have questions about our projects or investment opportunities? We’d love to hear from you!
+        <p>Interested in partnering with us on this journey of innovation? Have questions about our projects or components? We'd love to hear from you!
 <br><strong>Contact Us:</strong>
 <br><strong>Phone:</strong> +91 82 888 98 544
 <br><strong>Email:</strong> <a href="mailto:ishinder.dev@gmail.com">ishinder.dev@gmail.com</a>
