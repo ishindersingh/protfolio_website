@@ -39,12 +39,12 @@
 
         .container {
             width: 100%;
-            max-width: 360px;
+            max-width: 420px;
             height: 100%;
-            padding: 8px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -59,7 +59,7 @@
         }
 
         header h1 {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: 600;
         }
 
@@ -67,7 +67,7 @@
             display: inline-block;
             padding: 4px 12px;
             border-radius: 16px;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             font-weight: 500;
             margin-top: 4px;
         }
@@ -110,6 +110,7 @@
             width: 100%;
             height: 100%;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             background: rgba(0, 0, 0, 0.75);
@@ -118,6 +119,32 @@
             color: #FFFFFF;
             padding: 16px;
             text-align: center;
+        }
+
+        .video-controls {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            display: flex;
+            gap: 8px;
+            z-index: 20;
+        }
+
+        .control-btn {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
         }
 
         .controls {
@@ -129,7 +156,7 @@
         }
 
         .controls h2 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 10px;
         }
@@ -141,12 +168,12 @@
 
         .angle-btn {
             flex: 1;
-            padding: 10px 6px;
+            padding: 12px;
             background: var(--accent-blue);
             color: #FFFFFF;
             border: none;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -172,7 +199,7 @@
         }
 
         .graph-container h2 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 12px;
             display: flex;
@@ -210,7 +237,7 @@
 
         #three-canvas-container {
             width: 100%;
-            height: 140px;
+            height: 160px;
             position: relative;
             overflow: hidden;
             border-radius: 6px;
@@ -246,12 +273,12 @@
             padding: 12px;
             border: 1px solid var(--border-gray);
             border-radius: 8px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .info-panel h2 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 8px;
         }
@@ -321,41 +348,6 @@
             background: var(--hover-blue);
         }
 
-        @media (min-width: 600px) {
-            .container {
-                max-width: 420px;
-                padding: 16px;
-                gap: 12px;
-            }
-
-            header h1 {
-                font-size: 1.4rem;
-            }
-
-            .connection-status {
-                font-size: 0.85rem;
-            }
-
-            .controls h2,
-            .graph-container h2,
-            .info-panel h2 {
-                font-size: 1.1rem;
-            }
-
-            .angle-btn {
-                font-size: 0.9rem;
-                padding: 12px;
-            }
-
-            .info-panel {
-                font-size: 0.85rem;
-            }
-            
-            #three-canvas-container {
-                height: 160px;
-            }
-        }
-
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-white: #1A202C;
@@ -370,6 +362,21 @@
                 color: #E2E8F0;
             }
         }
+
+        /* Loading spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 10px auto;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -380,8 +387,25 @@
         </header>
 
         <section class="video-container">
-            <img id="video-feed" class="video-feed" src="" alt="Video Stream">
-            <div id="video-message" class="video-overlay">Connecting to video stream...</div>
+            <img id="video-feed" class="video-feed" crossorigin="anonymous" alt="Video Stream">
+            <div id="video-message" class="video-overlay">
+                <div class="spinner"></div>
+                <div>Connecting to video stream...</div>
+            </div>
+            <div class="video-controls">
+                <button id="capture-btn" class="control-btn" title="Capture Still">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="12" cy="12" r="5"></circle>
+                    </svg>
+                </button>
+                <button id="stream-toggle" class="control-btn" title="Toggle Stream">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                    </svg>
+                </button>
+            </div>
         </section>
 
         <section class="controls">
@@ -443,8 +467,13 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script>
+        // Configuration
         const wsUrl = 'ws://localhost:8765';
-        const streamUrl = 'http://192.168.0.119:81/stream';
+        const streamBaseUrl = 'http://192.168.0.119:81';
+        const streamUrl = `${streamBaseUrl}/stream`;
+        const captureUrl = `${streamBaseUrl}/capture`;
+        
+        // State variables
         let ws;
         let reconnectAttempts = 0;
         const maxReconnectAttempts = 10;
@@ -454,6 +483,14 @@
         let streamReconnectAttempts = 0;
         const maxStreamReconnectAttempts = 5;
         let streamRefreshInterval;
+        let isStreaming = false;
+
+        // DOM elements
+        const videoFeed = document.getElementById('video-feed');
+        const videoMessage = document.getElementById('video-message');
+        const streamStatus = document.getElementById('stream-status');
+        const captureBtn = document.getElementById('capture-btn');
+        const streamToggle = document.getElementById('stream-toggle');
 
         // Three.js setup
         const container = document.getElementById('three-canvas-container');
@@ -631,10 +668,6 @@
         }
 
         function checkStreamConnection() {
-            const videoFeed = document.getElementById('video-feed');
-            const videoMessage = document.getElementById('video-message');
-            const streamStatus = document.getElementById('stream-status');
-
             // Clear existing refresh interval
             if (streamRefreshInterval) {
                 clearInterval(streamRefreshInterval);
@@ -645,26 +678,29 @@
             
             videoFeed.onloadstart = () => {
                 console.log('Stream loading started');
-                videoMessage.textContent = 'Loading video stream...';
+                videoMessage.innerHTML = '<div class="spinner"></div><div>Loading video stream...</div>';
+                streamStatus.textContent = 'Connecting...';
             };
 
             videoFeed.onerror = () => {
                 console.error('Stream failed to load');
                 videoFeed.style.display = 'none';
                 videoMessage.style.display = 'flex';
-                videoMessage.textContent = 'Failed to connect to stream';
+                videoMessage.innerHTML = '<div>Failed to connect to stream</div>';
                 streamConnected = false;
                 streamStatus.textContent = 'Disconnected';
+                isStreaming = false;
+                streamToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>';
 
                 if (streamReconnectAttempts < maxStreamReconnectAttempts) {
                     streamReconnectAttempts++;
                     console.log(`Stream reconnect attempt ${streamReconnectAttempts}/${maxStreamReconnectAttempts}`);
                     streamStatus.textContent = `Reconnecting in 5s...`;
-                    videoMessage.textContent = `Reconnecting to stream... (Attempt ${streamReconnectAttempts}/${maxStreamReconnectAttempts})`;
+                    videoMessage.innerHTML = `<div class="spinner"></div><div>Reconnecting... (Attempt ${streamReconnectAttempts}/${maxStreamReconnectAttempts})</div>`;
                     setTimeout(checkStreamConnection, 5000);
                 } else {
                     streamStatus.textContent = 'Failed to connect';
-                    videoMessage.textContent = 'Failed to connect to stream: Max attempts reached';
+                    videoMessage.innerHTML = '<div>Failed to connect to stream: Max attempts reached</div>';
                     console.error('Max stream reconnect attempts reached');
                 }
             };
@@ -676,12 +712,69 @@
                 streamConnected = true;
                 streamReconnectAttempts = 0;
                 streamStatus.textContent = 'Connected';
+                isStreaming = true;
+                streamToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>';
 
                 // Refresh stream periodically to maintain connection
                 streamRefreshInterval = setInterval(() => {
                     videoFeed.src = `${streamUrl}?t=${Date.now()}`;
                 }, 30000);
             };
+        }
+
+        function captureStill() {
+            // Temporarily stop the stream if it's running
+            const wasStreaming = isStreaming;
+            if (wasStreaming) {
+                toggleStream();
+            }
+
+            // Create a new image element for the capture
+            const captureImg = new Image();
+            captureImg.crossOrigin = "anonymous";
+            captureImg.src = `${captureUrl}?t=${Date.now()}`;
+            
+            captureImg.onload = () => {
+                // Create a canvas to convert the image to a downloadable format
+                const canvas = document.createElement('canvas');
+                canvas.width = captureImg.width;
+                canvas.height = captureImg.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(captureImg, 0, 0);
+                
+                // Create a download link
+                const link = document.createElement('a');
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                link.download = `capture-${timestamp}.jpg`;
+                link.href = canvas.toDataURL('image/jpeg');
+                link.click();
+                
+                // Restore streaming if it was on
+                if (wasStreaming) {
+                    toggleStream();
+                }
+            };
+            
+            captureImg.onerror = () => {
+                alert('Failed to capture image');
+                if (wasStreaming) {
+                    toggleStream();
+                }
+            };
+        }
+
+        function toggleStream() {
+            if (isStreaming) {
+                // Stop streaming
+                videoFeed.src = '';
+                isStreaming = false;
+                streamToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>';
+                videoMessage.style.display = 'flex';
+                videoMessage.innerHTML = '<div>Stream paused</div>';
+            } else {
+                // Start streaming
+                checkStreamConnection();
+            }
         }
 
         // Demo data for preview
@@ -700,6 +793,10 @@
             connectWebSocket();
             checkStreamConnection();
             handleResize();
+            
+            // Set up button event listeners
+            captureBtn.addEventListener('click', captureStill);
+            streamToggle.addEventListener('click', toggleStream);
             
             // Show demo data if WebSocket not connected within 2 seconds
             setTimeout(() => {
