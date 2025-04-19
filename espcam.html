@@ -55,7 +55,8 @@
   </div>
 
   <script>
-    const ws = new WebSocket('wss://' + window.location.host);
+    // Connect to Render.com WebSocket (update with your Render.com URL)
+    const ws = new WebSocket('wss://your-app.onrender.com');
     const streamImg = document.getElementById('streamImg');
     const distanceValue = document.getElementById('distanceValue');
     const angleValue = document.getElementById('angleValue');
@@ -85,11 +86,13 @@
     ws.onclose = function() {
       console.log('WebSocket closed');
       distanceValue.innerHTML = '--';
+      streamImg.src = '';
     };
 
     ws.onerror = function(error) {
       console.error('WebSocket error:', error);
       distanceValue.innerHTML = '--';
+      streamImg.src = '';
     };
 
     function setServo(angle) {
@@ -98,8 +101,8 @@
         // Update UI immediately
         angleValue.innerHTML = angle + '°';
         servoSlider.value = angle;
-        // Send servo command to server
-        fetch('/servo?angle=' + angle, { cache: 'no-store' })
+        // Send servo command to Render.com server (update with your Render.com URL)
+        fetch('https://your-app.onrender.com/servo?angle=' + angle, { cache: 'no-store' })
           .then(response => {
             if (!response.ok) throw new Error('Network response was not ok');
             console.log('Servo set to ' + angle + '°');
