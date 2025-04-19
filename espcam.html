@@ -373,7 +373,6 @@
     </style>
 </head>
 <body>
-    <img style="display: block;-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 25%);" src="http://192.168.0.119:81/stream">
     <div class="container">
         <header>
             <h1>IRA Control Center</h1>
@@ -381,7 +380,8 @@
         </header>
 
         <section class="video-container">
-
+            <img id="video-feed" class="video-feed" src="" alt="Video Stream">
+            <div id="video-message" class="video-overlay">Connecting to video stream...</div>
         </section>
 
         <section class="controls">
@@ -640,30 +640,19 @@
                 clearInterval(streamRefreshInterval);
             }
 
-            // Test stream connectivity
-            const testImage = new Image();
-            testImage.src = `${streamUrl}?t=${Date.now()}`;
-
-            testImage.onload = () => {
-                console.log('Stream loaded successfully');
-                videoFeed.src = `${streamUrl}?t=${Date.now()}`;
-                videoMessage.style.display = 'none';
-                videoFeed.style.display = 'block';
-                streamConnected = true;
-                streamReconnectAttempts = 0;
-                streamStatus.textContent = 'Connected';
-
-                // Refresh stream every 30 seconds to maintain connection
-                streamRefreshInterval = setInterval(() => {
-                    videoFeed.src = `${streamUrl}?t=${Date.now()}`;
-                }, 30000);
+            // Set the video source with a cache-busting parameter
+            videoFeed.src = `${streamUrl}?t=${Date.now()}`;
+            
+            videoFeed.onloadstart = () => {
+                console.log('Stream loading started');
+                videoMessage.textContent = 'Loading video stream...';
             };
 
-            testImage.onerror = () => {
+            videoFeed.onerror = () => {
                 console.error('Stream failed to load');
+                videoFeed.style.display = 'none';
                 videoMessage.style.display = 'flex';
                 videoMessage.textContent = 'Failed to connect to stream';
-                videoFeed.style.display = 'none';
                 streamConnected = false;
                 streamStatus.textContent = 'Disconnected';
 
@@ -677,8 +666,21 @@
                     streamStatus.textContent = 'Failed to connect';
                     videoMessage.textContent = 'Failed to connect to stream: Max attempts reached';
                     console.error('Max stream reconnect attempts reached');
-                    videoFeed.src = ''; // Stop further attempts
                 }
+            };
+
+            videoFeed.onloadeddata = () => {
+                console.log('Stream loaded successfully');
+                videoFeed.style.display = 'block';
+                videoMessage.style.display = 'none';
+                streamConnected = true;
+                streamReconnectAttempts = 0;
+                streamStatus.textContent = 'Connected';
+
+                // Refresh stream periodically to maintain connection
+                streamRefreshInterval = setInterval(() => {
+                    videoFeed.src = `${streamUrl}?t=${Date.now()}`;
+                }, 30000);
             };
         }
 
