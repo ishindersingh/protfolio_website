@@ -117,6 +117,7 @@
             font-size: 0.85rem;
             color: #FFFFFF;
             padding: 16px;
+            text-align: center;
         }
 
         .controls {
@@ -380,8 +381,8 @@
 
         <section class="video-container">
             <img id="video-feed" class="video-feed" src="" alt="Video Stream">
-            <div id="video-message" class="video-overlay" style="display: none;">
-                Failed to connect to stream
+            <div id="video-message" class="video-overlay" style="display: flex;">
+                Connecting to stream...
             </div>
         </section>
 
@@ -512,12 +513,11 @@
             const points = [];
             const baseTime = dataPoints[0]?.timestamp || timestamp;
             for (let i = 0; i < dataPoints.length; i++) {
-                const time = (dataPoints[i].timestamp - baseTime) / 1000; // Seconds
-                const x = Math.min(time, 10) - 5; // -5 to 5
-                const y = Math.min(dataPoints[i].distance / 10, 5); // 0-50 cm -> 0-5
+                const time = (dataPoints[i].timestamp - baseTime) / 1000;
+                const x = Math.min(time, 10) - 5;
+                const y = Math.min(dataPoints[i].distance / 10, 5);
                 points.push(new THREE.Vector3(x, y, 0));
 
-                // Add sphere
                 const sphereGeometry = new THREE.SphereGeometry(0.15, 12, 12);
                 const sphereMaterial = new THREE.MeshPhongMaterial({ color: pointColor });
                 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
@@ -536,7 +536,6 @@
             line = new THREE.Line(geometry, material);
             scene.add(line);
 
-            // Update text
             document.getElementById('distance').textContent = `${parseFloat(distance).toFixed(1)} cm`;
         }
 
@@ -638,44 +637,49 @@
             const videoMessage = document.getElementById('video-message');
             const streamStatus = document.getElementById('stream-status');
 
-            // Clear any existing interval
+            // Clear existing refresh interval
             if (streamRefreshInterval) {
                 clearInterval(streamRefreshInterval);
             }
 
-            // Add timestamp to prevent caching
-            const urlWithTimestamp = `${streamUrl}?t=${Date.now()}`;
-            videoFeed.src = urlWithTimestamp;
+            // Test stream connectivity
+            const testImage = new Image();
+            testImage.src = `${streamUrl}?t=${Date.now()}`;
 
-            videoFeed.onload = () => {
+            testImage.onload = () => {
                 console.log('Stream loaded successfully');
+                videoFeed.src = `${streamUrl}?t=${Date.now()}`;
                 videoMessage.style.display = 'none';
                 videoFeed.style.display = 'block';
                 streamConnected = true;
                 streamReconnectAttempts = 0;
                 streamStatus.textContent = 'Connected';
-                
-                // Refresh stream every 5 seconds to maintain connection
+
+                // Refresh stream every 30 seconds to maintain connection
                 streamRefreshInterval = setInterval(() => {
                     videoFeed.src = `${streamUrl}?t=${Date.now()}`;
-                }, 5000);
+                }, 30000);
             };
 
-            videoFeed.onerror = () => {
+            testImage.onerror = () => {
                 console.error('Stream failed to load');
                 videoMessage.style.display = 'flex';
+                videoMessage.textContent = 'Failed to connect to stream';
                 videoFeed.style.display = 'none';
                 streamConnected = false;
                 streamStatus.textContent = 'Disconnected';
-                
+
                 if (streamReconnectAttempts < maxStreamReconnectAttempts) {
                     streamReconnectAttempts++;
                     console.log(`Stream reconnect attempt ${streamReconnectAttempts}/${maxStreamReconnectAttempts}`);
                     streamStatus.textContent = `Reconnecting in 5s...`;
+                    videoMessage.textContent = `Reconnecting to stream... (Attempt ${streamReconnectAttempts}/${maxStreamReconnectAttempts})`;
                     setTimeout(checkStreamConnection, 5000);
                 } else {
                     streamStatus.textContent = 'Failed to connect';
+                    videoMessage.textContent = 'Failed to connect to stream: Max attempts reached';
                     console.error('Max stream reconnect attempts reached');
+                    videoFeed.src = ''; // Stop further attempts
                 }
             };
         }
