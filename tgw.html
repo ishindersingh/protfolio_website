@@ -129,7 +129,7 @@
       background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)), url('https://github.com/ishindersingh/protfolio_website/blob/main/images/wallpaperflare.com_wallpaper.jpg?raw=true');
       background-size: cover;
       background-position: center;
-      background-attachment: fixed;
+      background-attachment: scroll; /* Default for mobile compatibility */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -139,6 +139,7 @@
     
     .hero-content {
       max-width: 800px;
+      padding: 0 15px;
     }
     
     .hero-content h2 {
@@ -422,7 +423,7 @@
       justify-content: center;
       width: 40px;
       height: 40px;
-      background-color: rgba(255,255,255, 0.1);
+      background-color: rgba(255,255,255,0.1);
       border-radius: 50%;
       color: var(--text);
       font-size: 1.2rem;
@@ -523,6 +524,12 @@
     }
     
     /* Responsive styles */
+    @media screen and (min-width: 769px) {
+      .hero {
+        background-attachment: fixed; /* Apply fixed background only on larger screens */
+      }
+    }
+    
     @media screen and (max-width: 992px) {
       .about-content {
         flex-direction: column;
@@ -562,12 +569,26 @@
         display: block;
       }
       
+      .hero {
+        height: 80vh; /* Shorter height for mobile */
+        background-size: cover; /* Ensure image covers area */
+      }
+      
       .hero-content h2 {
         font-size: 2.5rem;
+      }
+      
+      .hero-content p {
+        font-size: 1.1rem;
       }
     }
     
     @media screen and (max-width: 576px) {
+      .hero {
+        height: 70vh; /* Even shorter for smaller screens */
+        background-size: cover;
+      }
+      
       .hero-content h2 {
         font-size: 2rem;
       }
@@ -665,6 +686,7 @@
       <div class="about-content">
         <div class="about-text">
           <h3>Legacy of Excellence</h3>
+          <p/esm artifact_id="f26b14f2-ab6b-4bcd-9a90-ce3389bdffb7" title="index.html" contentType="text/html">
           <p>Founded on principles of quality, respect, and impeccable taste, The Godfather's Wardrobe was established to provide distinctive clothing for men who understand the power of appearance.</p>
           <p>Our designers draw inspiration from the world's most influential figures, creating pieces that convey authority while maintaining sophistication and style.</p>
           <p>When you wear our collections, you don't just dress — you make a statement about who you are and the respect you command.</p>
