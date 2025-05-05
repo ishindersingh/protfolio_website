@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Godfather's Wardrobe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: url('https://rockstarintel.com/wp-content/uploads/2025/01/PiB9zp6vxhU-1024x576.jpg') center/cover no-repeat fixed;
+      color: white;
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.95);
+      padding: 10px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #ffd724;
+      box-shadow: 0 0 15px #000;
+    }
+
+    header h1 {
+      font-family: 'Anton', sans-serif;
+      font-size: 2rem;
+      color: #ffd724;
+      letter-spacing: 1.5px;
+      border: 1px solid white;
+      padding: 5px 10px;
+    }
+
+    nav a {
+      margin-left: 15px;
+      color: #f5f5f5;
+      text-decoration: none;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      font-size: 0.9rem;
+    }
+
+    nav a:hover {
+      color: #ffd724;
+    }
+
+    .hero {
+      background: rgba(0, 0, 0, 0.7);
+      height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .hero-content h2 {
+      font-size: 3rem;
+      font-family: 'Anton', sans-serif;
+      color: #ffd724;
+      text-shadow: 2px 2px 10px #000;
+    }
+
+    .hero-content p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 20px auto;
+      color: #ddd;
+    }
+
+    .hero-content button {
+      background: #ffd724;
+      color: black;
+      font-weight: bold;
+      padding: 12px 24px;
+      border: 1px solid white;
+      cursor: pointer;
+      font-size: 1rem;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+
+    .hero-content button:hover {
+      background: #ffea8e;
+    }
+
+    .collections {
+      padding: 40px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      background-color: rgba(0, 0, 0, 0.95);
+    }
+
+    .collection-card {
+      background-color: #121212;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid #ffd724;
+      box-shadow: 0 0 10px #000;
+    }
+
+    .collection-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+    }
+
+    .collection-card h3 {
+      margin: 15px;
+      color: #ffd724;
+      font-family: 'Anton', sans-serif;
+      font-size: 1.4rem;
+    }
+
+    .collection-card p {
+      margin: 0 15px 15px;
+      color: #ccc;
+      font-size: 0.95rem;
+    }
+
+    footer {
+      background-color: #000;
+      color: #888;
+      text-align: center;
+      padding: 15px 10px;
+      font-size: 0.8rem;
+      border-top: 1px solid #333;
+    }
+
+    @media screen and (max-width: 600px) {
+      .hero-content h2 {
+        font-size: 2rem;
+      }
+
+      .hero-content p {
+        font-size: 1rem;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav a {
+        display: inline-block;
+        margin: 10px 10px 0 0;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The Godfather's Wardrobe</h1>
+    <nav>
+      <a href="#collections">Collections</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Dress Like a Don</h2>
+      <p>Power. Legacy. Luxury. Wear the code of the streets and the style of kings.</p>
+      <button onclick="location.href='#collections'">Explore Collections</button>
+    </div>
+  </section>
+
+  <section class="collections" id="collections">
+    <div class="collection-card">
+      <img src="https://cdn.shopify.com/s/files/1/0601/1476/4025/files/10_6fe08199-7965-4859-8ab1-22fcf8b35c6d.jpg?v=1704521847" alt="Old Money Suit">
+      <h3>Old Money Suits</h3>
+      <p>Elegance passed down through generations. Perfectly tailored pieces for those who rule without raising a voice.</p>
+    </div>
+    <div class="collection-card">
+      <img src="https://down-br.img.susercontent.com/file/br-11134207-7r98o-m6mw8f6ls568f1" alt="Gangsta Streetwear">
+      <h3>Gangsta Streetwear</h3>
+      <p>Outfits with a story — gritty, bold, and made to be worn with attitude. Respect the streets or run them.</p>
+    </div>
+    <div class="collection-card">
+      <img src="https://www.islandhaze.com/cdn/shop/files/Men_shawaiianshirt-OldMiami_1200x.jpg?v=1691667317" alt="Vice City Vibe">
+      <h3>Vice City Vibe</h3>
+      <p>Retro pastels with a deadly charm. Sunsets, convertibles, and untouchable swagger — this is paradise with a pistol.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 The Godfather's Wardrobe. All rights reserved. Style authorized by the streets.</p>
+  </footer>
+</body>
+</html>
