@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ishinder's ESP Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <script src="https://unpkg.com/paho-mqtt/mqttws31.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -68,82 +69,117 @@
     <canvas id="sensorChart"></canvas>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    const ws = new WebSocket('wss://todolist-sever.onrender.com');
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const clientID = "webClient-" + Math.random().toString(16).substr(2, 8);
+  const host = "campbell.lmq.cloudamqp.com";
+  const port = 443; // Use 443 if 15675 is not available
+  const username = "dyggonbe:dyggonbe";
+  const password = "TR6lyuTzGg_oNanaT5T2-vSEgw13v9H9";
 
-    ws.onopen = () => console.log('Connected to WebSocket server');
+  const client = new Paho.MQTT.Client(host, port, "/ws", clientID);
 
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        document.getElementById('temperature').textContent = data.temperature.toFixed(1);
-        document.getElementById('humidity').textContent = data.humidity.toFixed(1);
+  client.connect({
+    useSSL: true,
+    userName: username,
+    password: password,
+    onSuccess: onConnect,
+    onFailure: (err) => console.error("MQTT connect error:", err),
+  });
 
-        const now = new Date().toLocaleTimeString();
-        sensorChart.data.labels.push(now);
-        sensorChart.data.datasets[0].data.push(data.temperature);
-        sensorChart.data.datasets[1].data.push(data.humidity);
+  client.onConnectionLost = (responseObject) => {
+    console.log("Connection lost:", responseObject.errorMessage);
+  };
 
-        if (sensorChart.data.labels.length > 20) {
-          sensorChart.data.labels.shift();
-          sensorChart.data.datasets[0].data.shift();
-          sensorChart.data.datasets[1].data.shift();
-        }
+  client.onMessageArrived = (message) => {
+    const topic = message.destinationName;
+    const payload = message.payloadString;
+    console.log("Message on", topic, ":", payload);
 
-        sensorChart.update();
-      } catch (e) {
-        console.error('Error parsing data:', e);
-      }
-    };
+    if (topic === "esp32/dht/temperature") {
+      document.getElementById("temperature").textContent = parseFloat(payload).toFixed(1);
+      addChartData("temperature", parseFloat(payload));
+    }
 
-    ws.onclose = () => console.log('Disconnected from WebSocket server');
+    if (topic === "esp32/dht/humidity") {
+      document.getElementById("humidity").textContent = parseFloat(payload).toFixed(1);
+      addChartData("humidity", parseFloat(payload));
+    }
+  };
 
-    const ctx = document.getElementById('sensorChart').getContext('2d');
-    const sensorChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: [],
-        datasets: [
-          {
-            label: 'Temperature (°C)',
-            data: [],
-            borderColor: '#ff5f5f',
-            backgroundColor: 'rgba(255, 95, 95, 0.2)',
-            tension: 0.3,
-            fill: true
-          },
-          {
-            label: 'Humidity (%)',
-            data: [],
-            borderColor: '#00ffe0',
-            backgroundColor: 'rgba(0, 255, 224, 0.2)',
-            tension: 0.3,
-            fill: true
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            labels: {
-              color: '#f1f1f1'
-            }
-          }
+  function onConnect() {
+    console.log("Connected to MQTT broker");
+    client.subscribe("esp32/dht/temperature");
+    client.subscribe("esp32/dht/humidity");
+  }
+
+  const ctx = document.getElementById('sensorChart').getContext('2d');
+  const sensorChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: 'Temperature (°C)',
+          data: [],
+          borderColor: '#ff5f5f',
+          backgroundColor: 'rgba(255, 95, 95, 0.2)',
+          tension: 0.3,
+          fill: true
         },
-        scales: {
-          x: {
-            ticks: { color: '#ccc' },
-            title: { display: true, text: 'Time', color: '#ccc' }
-          },
-          y: {
-            ticks: { color: '#ccc' },
-            title: { display: true, text: 'Value', color: '#ccc' }
+        {
+          label: 'Humidity (%)',
+          data: [],
+          borderColor: '#00ffe0',
+          backgroundColor: 'rgba(0, 255, 224, 0.2)',
+          tension: 0.3,
+          fill: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#f1f1f1'
           }
         }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#ccc' },
+          title: { display: true, text: 'Time', color: '#ccc' }
+        },
+        y: {
+          ticks: { color: '#ccc' },
+          title: { display: true, text: 'Value', color: '#ccc' }
+        }
       }
-    });
-  </script>
+    }
+  });
+
+  function addChartData(type, value) {
+    const now = new Date().toLocaleTimeString();
+    if (sensorChart.data.labels.length >= 20) {
+      sensorChart.data.labels.shift();
+      sensorChart.data.datasets[0].data.shift();
+      sensorChart.data.datasets[1].data.shift();
+    }
+
+    if (!sensorChart.data.labels.includes(now)) {
+      sensorChart.data.labels.push(now);
+    }
+
+    if (type === "temperature") {
+      sensorChart.data.datasets[0].data.push(value);
+    } else if (type === "humidity") {
+      sensorChart.data.datasets[1].data.push(value);
+    }
+
+    sensorChart.update();
+  }
+</script>
+
 </body>
 </html>
