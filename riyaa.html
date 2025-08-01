@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Girlfriend Day</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            color: #d81b60;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-family: 'Dancing Script', cursive;
+            margin-bottom: 10px;
+            color: #c2185b;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(200, 30, 90, 0.1);
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+
+        .drawing-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 20px 0;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 350px;
+            border-radius: 15px;
+            border: 2px solid #f48fb1;
+            background-color: white;
+            cursor: crosshair;
+        }
+
+        .template-heart {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 350px;
+            z-index: -1;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .btn {
+            background-color: #ec407a;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(236, 64, 122, 0.3);
+        }
+
+        .btn:hover {
+            background-color: #d81b60;
+            transform: translateY(-2px);
+        }
+
+        .rating-container {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            border-top: 1px solid #f8bbd0;
+            width: 100%;
+        }
+
+        .rating-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #c2185b;
+        }
+
+        .rating-score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #d81b60;
+            margin-bottom: 15px;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .rating-message {
+            font-size: 1.1rem;
+            color: #ec407a;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .flying-hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: fly 10s linear;
+            opacity: 0;
+        }
+
+        @keyframes fly {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .message {
+            font-size: 1.1rem;
+            text-align: center;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 15px;
+                width: 95%;
+            }
+
+            #canvas {
+                height: 300px;
+            }
+
+            .template-heart {
+                height: 300px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="flying-hearts"></div>
+
+    <div class="header">
+        <h1>Happy Girlfriend Day, Riya!</h1>
+        <div class="subtitle">Draw a heart to show your love ❤️</div>
+    </div>
+
+    <div class="container">
+        <div class="message">
+            Show how much you care by drawing the perfect heart. Take your time and create something beautiful!
+        </div>
+
+        <div class="drawing-container">
+            <canvas id="canvas"></canvas>
+            <img src="https://i.imgur.com/rrUWPXR.png" alt="Heart template" class="template-heart">
+        </div>
+
+        <div class="controls">
+            <button id="clear-btn" class="btn">Clear Drawing</button>
+            <button id="rate-btn" class="btn">Rate My Heart</button>
+        </div>
+
+        <div class="rating-container">
+            <div class="rating-title">Heart Rating</div>
+            <div id="rating-score" class="rating-score">0</div>
+            <div id="rating-message" class="rating-message"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const clearBtn = document.getElementById('clear-btn');
+            const rateBtn = document.getElementById('rate-btn');
+            const ratingScore = document.getElementById('rating-score');
+            const ratingMessage = document.getElementById('rating-message');
+            const flyingHearts = document.querySelector('.flying-hearts');
+            
+            // Set canvas dimensions
+            function resizeCanvas() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            let strokePoints = [];
+
+            // Start drawing when mouse down or touch start
+            function startDrawing(e) {
+                isDrawing = true;
+                const { x, y } = getCoordinates(e);
+                lastX = x;
+                lastY = y;
+                strokePoints = [{x, y}];
+                
+                // Start a new path
+                ctx.beginPath();
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#ff4081';
+                ctx.moveTo(x, y);
+            }
+
+            // Draw as mouse/finger moves
+            function draw(e) {
+                if (!isDrawing) return;
+                e.preventDefault(); // Prevent scrolling on touch devices
+                
+                const { x, y } = getCoordinates(e);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                
+                lastX = x;
+                lastY = y;
+                strokePoints.push({x, y});
+            }
+
+            // Stop drawing
+            function stopDrawing() {
+                isDrawing = false;
+            }
+
+            // Get coordinates whether mouse or touch
+            function getCoordinates(event) {
+                let x, y;
+                
+                if (event.type.includes('touch')) {
+                    const rect = canvas.getBoundingClientRect();
+                    const touch = event.touches[0] || event.changedTouches[0];
+                    x = touch.clientX - rect.left;
+                    y = touch.clientY - rect.top;
+                } else {
+                    const rect = canvas.getBoundingClientRect();
+                    x = event.clientX - rect.left;
+                    y = event.clientY - rect.top;
+                }
+                
+                return { x, y };
+            }
+
+            // Clear canvas
+            function clearCanvas() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                strokePoints = [];
+                ratingScore.style.opacity = '0';
+                ratingMessage.textContent = '';
+            }
+
+            // Rate the heart drawing
+            function rateHeart() {
+                if (strokePoints.length < 10) {
+                    ratingMessage.textContent = "Please draw a heart first!";
+                    ratingScore.style.opacity = '0';
+                    return;
+                }
+
+                // Calculate how close the drawing is to a heart shape
+                const score = calculateHeartScore();
+                
+                // Display the score with animation
+                ratingScore.textContent = score;
+                ratingScore.style.opacity = '1';
+                
+                // Display appropriate message
+                if (score >= 9) {
+                    ratingMessage.textContent = "Perfect! Your heart is as beautiful as your love! ❤️";
+                    createHeartExplosion(30);
+                } else if (score >= 7) {
+                    ratingMessage.textContent = "Amazing! Your heart shows how much you care!";
+                    createHeartExplosion(15);
+                } else if (score >= 5) {
+                    ratingMessage.textContent = "Nice effort! Your love shines through!";
+                    createHeartExplosion(8);
+                } else {
+                    ratingMessage.textContent = "Keep trying! Your heart is unique, just like you!";
+                }
+            }
+
+            // Calculate a score based on the drawn shape
+            function calculateHeartScore() {
+                // For simplicity, we'll use a random score biased toward higher numbers
+                // In a real app, you'd use image recognition or shape comparison
+                
+                // 60% chance of 7-10 score, 30% chance of 5-6, 10% chance of lower
+                const rand = Math.random();
+                let base;
+                
+                if (rand < 0.6) {
+                    base = 7 + Math.floor(Math.random() * 4);
+                } else if (rand < 0.9) {
+                    base = 5 + Math.floor(Math.random() * 2);
+                } else {
+                    base = 3 + Math.floor(Math.random() * 2);
+                }
+                
+                // Add a decimal
+                return base + Math.floor(Math.random() * 10) / 10;
+            }
+
+            // Create animated hearts
+            function createHeartExplosion(count) {
+                for (let i = 0; i < count; i++) {
+                    setTimeout(() => {
+                        const heart = document.createElement('div');
+                        heart.classList.add('heart');
+                        heart.innerHTML = '❤️';
+                        heart.style.left = Math.random() * 100 + 'vw';
+                        heart.style.animationDuration = (5 + Math.random() * 10) + 's';
+                        heart.style.fontSize = (20 + Math.random() * 30) + 'px';
+                        
+                        flyingHearts.appendChild(heart);
+                        
+                        // Remove heart after animation
+                        setTimeout(() => {
+                            heart.remove();
+                        }, 10000);
+                    }, i * 200);
+                }
+            }
+
+            // Add random floating hearts in background
+            function addRandomHearts() {
+                setInterval(() => {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart');
+                    heart.innerHTML = '❤️';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animationDuration = (8 + Math.random() * 12) + 's';
+                    heart.style.fontSize = (10 + Math.random() * 20) + 'px';
+                    
+                    flyingHearts.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 12000);
+                }, 2000);
+            }
+
+            // Event listeners
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch support
+            canvas.addEventListener('touchstart', startDrawing);
+            canvas.addEventListener('touchmove', draw);
+            canvas.addEventListener('touchend', stopDrawing);
+            
+            clearBtn.addEventListener('click', clearCanvas);
+            rateBtn.addEventListener('click', rateHeart);
+
+            // Start random hearts
+            addRandomHearts();
+        });
+    </script>
+</body>
+</html>
